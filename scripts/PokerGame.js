@@ -1,0 +1,603 @@
+
+class Bot {
+  constructor() {
+    const Subject = rxjs.Subject;
+
+    this.answer = new Subject();
+    this.answer$ = this.answer.asObservable();
+  }
+
+  init(game) {}
+
+  respond(data) {
+    this.answer.next(data);
+  }
+
+  react(game) {}
+}
+
+class PokerBaseBot extends Bot {
+  constructor() {
+    super();
+    this.status = 0;
+    this.actions = {};
+  }
+
+  init(game) {
+    game.rx.observable.players.action$.subscribe(data => {
+      var action = new PlayerAction(data.action);
+      var table = data.table;
+
+      if (!this.actions[action.name]) {
+        this.actions[action.name] = [];
+      }
+
+      var currentPlayer = this.actions[action.name];
+      currentPlayer.push(action.action);
+
+      if (table.roundName === 'Flop' &&
+        (action.action === 'raise' || action.action === 'allin' || action.action === 'bet') &&
+        currentPlayer.toString().indexOf('raise') === -1) {
+        this.status = PokerBaseBot.statuses.risk;
+      }
+
+      if (table.roundName === 'Turn' &&
+        (action.action === 'raise' || action.action === 'allin' || action.action === 'bet') &&
+        currentPlayer.toString().indexOf('raise') === -1) {
+        this.status = PokerBaseBot.statuses.danger;
+      }
+    });
+
+    game.rx.observable.round.start$.subscribe(_ => {
+      this.actions = {};
+      this.status = 0;
+    });
+  }
+
+  react(game) {
+    const selfCards = game.self.cards;
+    const allCards = game.self.cards.concat(game.board);
+
+    if (allCards.length === 2) {
+      return this.respond({ action: 'call' });
+    }
+
+    var handRanks = [];
+    var handSuits = [];
+    var isTonghua = false;
+    var isShunzi = false;
+    var isSitiao = false;
+    var isSantiao = false;
+    var pairNumber = 0;
+    var pairValue = '';
+    var maxPairValue = '0';
+
+    var temp = 1;
+
+    var i = 0;
+    for (i = 0; i < allCards.length; i++) {
+        handRanks[i] = allCards[i].substr(0, 1);
+        handSuits[i] = allCards[i].substr(1, 2);
+    }
+
+    for (i = 0; i < selfCards.length; i++)
+      selfCards[i] = selfCards[i].substr(0, 1);
+
+    handRanks = handRanks.sort().toString().replace(/\W/g, '');
+    handSuits = handSuits.sort().toString().replace(/\W/g, '');
+
+    for (i = 1; i < handRanks.length; i++) {
+      if (handRanks[i].charCodeAt(0) - handRanks[i - 1].charCodeAt(0) === 1) {
+        temp++;
+        if (temp === 5)
+          isShunzi = true;
+      } else {
+        temp = 1;
+      }
+    }
+
+    temp = 1;
+    for (i = 1; i < handRanks.length; i++) {
+      if (handRanks[i] === handRanks[i - 1]) {
+        temp++;
+        if (temp === 4)
+          isSitiao = true;
+        else if (temp === 3)
+          isSantiao = true;
+        else if (temp === 2) {
+          pairNumber++;
+          pairValue += handRanks[i];
+          if (handRanks[i] === 'A' && maxPairValue === '0')
+            maxPairValue = '1';
+          else if (handRanks[i] === 'T' && maxPairValue < 'I')
+            maxPairValue = 'I';
+          else if (handRanks[i] > maxPairValue)
+            maxPairValue = handRanks[i];
+        }
+      } else {
+        temp = 1;
+      }
+    }
+
+    temp = 1;
+    for (i = 1; i < handSuits.length; i++) {
+      if (handSuits[i] === handSuits[i - 1]) {
+          temp++;
+          if (temp === 5) {
+              isTonghua = true;
+          }
+      }
+      else
+        temp = 1;
+    }
+
+    if (isTonghua || isShunzi) {
+      if (handRanks.indexOf('T') > -1 && handRanks.indexOf('J') > -1 && handRanks.indexOf('Q') > -1 && handRanks.indexOf('K') > -1 && handRanks.indexOf('A') > -1)
+        this.respond({ action: 'raise' });
+      else if (isTonghua && isShunzi)
+        this.respond({ action: 'allin' });
+      else if (this.status !== PokerBaseBot.statuses.danger)
+        this.respond({ action: 'raise' });
+      else
+        this.respond({ action: 'call' });
+      return;
+    }
+
+    if (isSitiao) {
+      if (this.status !== PokerBaseBot.statuses.danger)
+        this.respond({ action: 'raise' });
+      else
+        this.respond({ action: 'call' });
+      return;
+    }
+
+    var winprob = game.self.min / game.table.bet;
+
+    if (isSantiao || pairNumber > 1) {
+      if (isSantiao && (pairNumber > 1 || maxPairValue > '9') && this.status !== PokerBaseBot.statuses.danger)
+        this.respond({ action: 'raise' });
+      else if (this.status === PokerBaseBot.statuses.danger && !isSantiao && !(pairValue.indexOf(selfCards[0]) > -1 && pairValue.indexOf(selfCards[1]) > -1 && selfCards[0] !== selfCards[1]) && maxPairValue < 'I')
+        this.respond({ action: 'fold' });
+      else if (winprob < .7)
+        this.respond({ action: 'call' });
+      else
+        this.respond({ action: 'fold' });
+      return;
+    }
+
+    // One Pair
+    if (pairNumber > 0 && (pairValue.toString().indexOf(selfCards[0]) > -1 || pairValue.toString().indexOf(selfCards[1]) > -1)) {
+      if ((this.status === PokerBaseBot.statuses.risk && maxPairValue < '8') || (this.status === PokerBaseBot.statuses.danger && maxPairValue < 'J'))
+        this.respond({ action: 'fold' });
+      else if (winprob < .5)
+        this.respond({ action: 'call' });
+      else
+        this.respond({ action: 'fold' });
+      return;
+    }
+
+    if (allCards.length > 5)
+      this.respond({ action: 'fold' });
+    else if (game.self.min < game.self.chips * .4)
+      this.respond({ action: 'call' });
+    else
+      this.respond({ action: 'fold' });
+  }
+}
+
+PokerBaseBot.statuses = {
+  risk: 1,
+  danger: 2
+};
+
+class AnonymousPlayer {
+  constructor(data) {
+    this.assign(data);
+  }
+
+  assign(data) {
+    Object.assign(this, Player.format(data));
+  }
+}
+
+AnonymousPlayer.create = data => new AnonymousPlayer(data);
+
+class Player extends AnonymousPlayer {
+  constructor(id) {
+    super({ playerName: md5(id) });
+    this.id = id;
+    this.cards = [0, 0];
+    this.self = true;
+  }
+
+  assign(data) {
+    super.assign(data);
+    this.cards = data.cards;
+  }
+}
+
+Player.format = data => {
+  const name = data.playerName;
+  const chips = data.chips;
+  const min = data.minBet;
+  const hand = data.hand;
+  const cards = Player.cards(data.cards);
+  const folded = data.folded;
+  const allin = data.allIn;
+  const online = data.isOnline;
+  const survive = data.isSurvive;
+  const human = data.isHuman;
+  return { name, chips, min, hand, cards, folded, allin, online, survive, human };
+};
+
+Player.cards = cards => {
+  return !cards || !cards.length ? [0, 0] : cards;
+};
+
+class Players {
+  constructor() {
+    this.list = [];
+    this.map = new Map();
+    this.winners = [];
+  }
+
+  assign(list) {
+    this.list = list.map(AnonymousPlayer.create);
+    this.list.forEach(player => this.map.set(player.name, player));
+  }
+
+  set(name, data) {
+    this.map.get(name).assign(data);
+  }
+
+  update(name, prop, value) {
+    this.map.get(name)[prop] = value;
+  }
+}
+
+class PlayerWinner {
+  constructor(data) {
+    this.name = data.playerName;
+    this.chips = data.chips;
+    this.hand = data.hand;
+  }
+}
+
+class GameTable {
+  constructor() {
+    this.number = 0;
+    this.rounds = -1;
+    this.stage = '-';
+    this.cards = [0, 0, 0, 0, 0];
+    this.bet = 0;
+    this.ready = false;
+  }
+
+  assign(data) {
+    Object.assign(this, GameTable.format(data));
+    this.ready = true;
+  }
+}
+
+GameTable.board = cards => {
+  const defaults = [0, 0, 0, 0, 0];
+  if (!cards || !cards.length) { return defaults; }
+  defaults.splice.call(defaults, 0, cards.length, ...cards);
+  return defaults;
+};
+
+GameTable.format = data => {
+  const number = data.tableNumber;
+  const rounds = data.roundCount;
+  const stage = data.roundName;
+  const cards = GameTable.board(data.board);
+  const bet = data.totalBet;
+  const sb = BlindBet.format(data.smallBlind);
+  const bb = BlindBet.format(data.bigBlind);
+  return { number, rounds, stage, cards, bet, sb, bb };
+};
+
+class BlindBet {}
+
+BlindBet.format = data => {
+  const name = data.playerName;
+  const amount = data.amount;
+  return { name, amount };
+};
+
+class PlayerAction {
+  constructor(data) {
+    this.name = data.playerName;
+    this.action = data.action;
+    this.chips = data.chips;
+    this.self = data.self;
+  }
+}
+
+class PokerGame extends EventTarget {
+  constructor(options) {
+    super();
+    const Subject = rxjs.Subject;
+    const filter = rxjs.operators.filter;
+    const map = rxjs.operators.map;
+
+    this.defaults = { rejoin: true, bet: 0, games: 1 };
+    this.options = Object.assign({}, this.defaults, options);
+    this.server = this.options.server;
+    this.socket = null;
+    this.table = new GameTable();
+    this.player = new Player(this.options.player);
+    this.players = new Players();
+    this.bot = this.options.bot;
+    this.games = 0;
+    this.connected = false;
+
+    this.rx = {};
+
+    this.rx.subject = {
+      events: new Subject(),
+      actions: new Subject(),
+    };
+
+    this.rx.observable = {
+      events$: this.rx.subject.events.asObservable(),
+      actions$: this.rx.subject.actions.asObservable(),
+    };
+
+    this.rx.observable.socket = {
+      connected$: this.rx.observable.events$.pipe(
+        filter(v => v.type === PokerGame.events.connected)
+      ),
+      disconnected$: this.rx.observable.events$.pipe(
+        filter(v => v.type === PokerGame.events.disconnected)
+      ),
+    };
+
+    this.rx.observable.messages$ = this.rx.observable.events$.pipe(
+      filter(v => v.type === PokerGame.events.message),
+      filter(v => v.data.eventName),
+      map(v => ({ type: v.data.eventName, data: v.data.data }))
+    );
+
+    this.rx.observable.table = {
+      join$: this.rx.observable.actions$.pipe(
+        filter(v => v.action === PokerGame.actions.join),
+        map(v => v.data)
+      ),
+      joined$: this.rx.observable.messages$.pipe(
+        filter(v => v.type === PokerGame.messages.join),
+        map(v => v.data)
+      )
+    };
+
+    this.rx.observable.game = {
+      start$: this.rx.observable.messages$.pipe(
+        filter(v => v.type === PokerGame.messages.game_start),
+        map(v => v.data)
+      ),
+      over$: this.rx.observable.messages$.pipe(
+        filter(v => v.type === PokerGame.messages.game_over),
+        map(v => v.data)
+      )
+    };
+
+    this.rx.observable.round = {
+      start$: this.rx.observable.messages$.pipe(
+        filter(v => v.type === PokerGame.messages.new_round),
+        map(v => v.data)
+      ),
+      deal$: this.rx.observable.messages$.pipe(
+        filter(v => v.type === PokerGame.messages.deal),
+        map(v => v.data)
+      ),
+      reload$: this.rx.observable.messages$.pipe(
+        filter(v => v.type === PokerGame.messages.start_reload),
+        map(v => v.data)
+      ),
+      end$: this.rx.observable.messages$.pipe(
+        filter(v => v.type === PokerGame.messages.round_end),
+        map(v => v.data)
+      )
+    };
+
+    this.rx.observable.player = {
+      action$: this.rx.observable.messages$.pipe(
+        filter(v => v.type === PokerGame.messages.action),
+        map(v => v.data)
+      ),
+      bet$: this.rx.observable.messages$.pipe(
+        filter(v => v.type === PokerGame.messages.bet),
+        map(v => v.data)
+      )
+    };
+
+    this.rx.observable.players = {
+      action$: this.rx.observable.messages$.pipe(
+        filter(v => v.type === PokerGame.messages.show_action),
+        map(v => v.data)
+      ),
+    };
+
+    this.init();
+  }
+
+  init() {
+    const observable = this.rx.observable;
+
+    observable.socket.connected$.subscribe(_ => setTimeout(() => this.join(), 50));
+    observable.socket.disconnected$.subscribe(_ => this.connected = false);
+    observable.round.reload$.subscribe(_ => this.reload());
+
+    observable.game.start$.subscribe(data => {
+      this.table.number = data.tableNumber;
+    });
+
+    observable.game.over$.subscribe(data => {
+      ++this.games;
+      this.players.assign(data.players);
+      Object.assign(this.player, this.players.map.get(this.player.name));
+      this.players.update(this.player.name, 'self', true);
+      this.players.winners = data.winners.map(data => new PlayerWinner(data));
+      this.options.rejoin && this.games < this.options.games && this.join();
+    });
+
+    observable.table.joined$.subscribe(data => {
+      this.table.assign(data.table);
+      this.players.assign(data.players);
+      Object.assign(this.player, this.players.map.get(this.player.name));
+      this.players.update(this.player.name, 'self', true);
+    });
+
+    observable.round.start$.subscribe(data => {
+      this.table.assign(data.table);
+      this.players.assign(data.players);
+      Object.assign(this.player, this.players.map.get(this.player.name));
+      this.players.update(this.player.name, 'self', true);
+    });
+
+    observable.round.deal$.subscribe(data => {
+      this.table.assign(data.table);
+      this.players.assign(data.players);
+      Object.assign(this.player, this.players.map.get(this.player.name));
+      this.players.update(this.player.name, 'self', true);
+    });
+
+    observable.round.end$.subscribe(data => {
+      this.table.assign(data.table);
+      this.players.assign(data.players);
+      Object.assign(this.player, this.players.map.get(this.player.name));
+      this.players.update(this.player.name, 'self', true);
+    });
+
+    observable.player.action$.subscribe(({ game, self }) => {
+      const player = Object.assign({}, this.player, Player.format(self));
+      const board = game.board;
+      const data = Object.assign({}, this, { self: player, board });
+      this.bot.react(data);
+    });
+
+    observable.player.bet$.subscribe(({ game, self }) => {
+      const player = Object.assign({}, this.player, Player.format(self));
+      const board = game.board;
+      const data = Object.assign({}, this, { self: player, board });
+      this.bot.react(data);
+    });
+
+    this.bot.init(this);
+    this.bot.answer$.subscribe(data => this[data.action]());
+  }
+
+  configure(options) {
+    this.options = Object.assign({}, this.defaults, options);
+    this.server = this.options.server || thie.server;
+    this.player = this.options.player ? new Player(this.options.player) : this.player;
+    this.bot = this.options.bot || this.bot;
+  }
+
+  bet(amount) {
+    const data = { action: 'bet', amount: amount || this.options.bet };
+    this.send(PokerGame.actions.action, data);
+  }
+
+  call() {
+    const data = { action: 'call' };
+    this.send(PokerGame.actions.action, data);
+  }
+
+  check() {
+    const data = { action: 'check' };
+    this.send(PokerGame.actions.action, data);
+  }
+
+  raise() {
+    const data = { action: 'raise' };
+    this.send(PokerGame.actions.action, data);
+  }
+
+  allin() {
+    const data = { action: 'allin' };
+    this.send(PokerGame.actions.action, data);
+  }
+
+  fold() {
+    const data = { action: 'fold' };
+    this.send(PokerGame.actions.action, data);
+  }
+
+  reload() {
+    this.send(PokerGame.actions.reload);
+  }
+
+  join() {
+    const data = { playerName: this.player.id };
+    this.connected = true;
+    this.send(PokerGame.actions.join, data);
+  }
+
+  send(action, data) {
+    this.rx.subject.actions.next({ action: action, data: data });
+    this.socket.send(
+      JSON.stringify({
+        eventName: action,
+        data: data
+      })
+    );
+    return this;
+  }
+
+  connect() {
+    const subject = this.rx.subject;
+    this.socket = new WebSocket(this.server);
+    this.socket.onopen = event => subject.events.next({ type: PokerGame.events.connected });
+    this.socket.onclose = event => subject.events.next({ type: PokerGame.events.disconnected, event });
+    this.socket.onmessage = event => subject.events.next({
+      type: PokerGame.events.message,
+      data: JSON.parse(event.data)
+    });
+    this.socket.onerror = event => subject.events.next({ type: PokerGame.events.error, event });
+    return this;
+  }
+
+  disconnect() {
+    this.socket.close();
+    return this;
+  }
+
+  on(type, callback) {
+    this.addEventListener(type, callback);
+    return this;
+  }
+
+  emit(type, data) {
+    const event = new Event(type);
+    event.data = data;
+    this.dispatchEvent(event);
+    return this;
+  }
+}
+
+PokerGame.events = {
+  connected: 'connected',
+  disconnected: 'disconnected',
+  message: 'message',
+  error: 'error',
+};
+
+PokerGame.actions = {
+  join: '__join',
+  action: '__action',
+  reload: '__reload',
+};
+
+PokerGame.messages = {
+  action: '__action',
+  bet: '__bet',
+  show_action: '__show_action',
+  new_round: '__new_round',
+  deal: '__deal',
+  start_reload: '__start_reload',
+  round_end: '__round_end',
+  join: '_join',
+  game_start: '__game_start',
+  game_over: '__game_over',
+};

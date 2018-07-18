@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="train">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="styles/styles.css">
+  <title>Train Model & Test</title>
+</head>
+<body ng-controller="RootCtrl">
+  <div class="main-column-left">
+    <form class="form-vertical" ng-controller="TrainModelCtrl">
+      <h4>Train Model</h4>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="learning-rate">Learning Rate</label>
+            <input id="learning-rate" type="text" class="form-control" ng-model="options.learningRate" ng-change="update('learningRate', options.learningRate)" ng-disabled="fitting">
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="form-group">
+              <label for="epochs">Epochs</label>
+              <input id="epochs" type="text" class="form-control" ng-model="options.epochs" ng-change="update('epochs', options.epochs)" ng-disabled="fitting">
+            </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="batch-size">Batch Size</label>
+            <input id="batch-size" type="text" class="form-control" ng-model="options.batchSize" ng-change="update('batchSize', options.batchSize)" ng-disabled="fitting">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="train-inputs" class="btn btn-default">
+              <input id="train-inputs" type="file" class="hide" ng-model="inputs" ng-file-model ng-change="select('inputs', 'xs')" ng-disabled="fitting">
+              <span>Browse Inputs</span>
+            </label>
+            <span class="file-name">
+              <span ng-bind="inputs.name"></span>
+              <span ng-if="inputs.loaded">(loaded)</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="train-outputs" class="btn btn-default">
+              <input id="train-outputs" type="file" class="hide" ng-model="outputs" ng-file-model ng-change="select('outputs', 'ys')" ng-disabled="fitting">
+              <span>Browse Outputs</span>
+            </label>
+            <span class="file-name">
+              <span ng-bind="outputs.name"></span>
+              <span ng-if="outputs.loaded">(loaded)</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-primary" type="button" ng-click="train()" ng-disabled="fitting">Train Model</button>
+        <button class="btn btn-default" type="button" ng-click="save()" ng-disabled="fitting">Save Model</button>
+      </div>
+    </form>
+
+    <hr>
+
+    <form class="form-vertical" ng-controller="LoadModelCtrl">
+      <h4>Load Model</h4>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="json-upload" class="btn btn-default">
+              <input id="json-upload" type="file" class="hide" ng-model="json" ng-file-model>
+              <span>Browse JSON</span>
+            </label>
+            <span class="file-name">
+              <span ng-bind="json.name"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="weights-upload" class="btn btn-default">
+              <input id="weights-upload" type="file" class="hide" ng-model="weights" ng-file-model>
+              <span>Browse Weights</span>
+            </label>
+            <span class="file-name">
+              <span ng-bind="weights.name"></span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-primary" type="button" ng-click="load()" ng-disabled="loading">Load Model</button>
+      </div>
+    </form>
+
+    <hr>
+
+    <form class="form-vertical" ng-controller="PredictCtrl">
+      <h4>Predict</h4>
+      <div class="form-group">
+        <label for="predict-inputs" class="btn btn-default">
+          <input id="predict-inputs" type="file" class="hide" ng-model="inputs" ng-file-model ng-change="select()">
+          <span>Browse Inputs</span>
+        </label>
+        <span class="file-name">
+          <span ng-bind="inputs.name"></span>
+          <span ng-if="inputs.loaded">(loaded)</span>
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="predict-text">Text Inputs</label>
+        <input id="predict-text" type="text" class="form-control" placeholder="4, 3, 0, 0, 0, 0, 0, 6" ng-model="text" ng-change="input()">
+      </div>
+
+      <div class="form-group">
+        <button ng-click="predict()" class="btn btn-primary" type="button">Predict Inputs</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="main-column-right outputs-wrapper">
+    <div class="outputs" auto-scroll bottom-bound="80">
+      <ul class="list-group">
+        <li class="list-group-item" ng-repeat="log in logger.logs" ng-class="log.type">
+          <span class="fragment" ng-repeat="message in log.messages">{{message}}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="vendors/tensorflow.min.js"></script>
+  <script src="vendors/angular.min.js"></script>
+  <script src="scripts/PokerModel.js"></script>
+  <script src="scripts/ng-util.js"></script>
+  <script src="scripts/ng-train.js"></script>
+</body>
+</html>
