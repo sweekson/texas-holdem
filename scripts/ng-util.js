@@ -190,7 +190,7 @@ angular.module('util', [])
   filter.level.set = (key, bool) => (filters.levels[key] = bool);
   filter.level.active = key => filters.levels[key];
 
-  filter.type.toggle = (key, bool) => {
+  filter.level.toggle = (key, bool) => {
     filters.levels[key] = bool !== undefined ? bool : !filters.levels[key];
     emitter.dispatchEvent(new Event('change'));
   };
