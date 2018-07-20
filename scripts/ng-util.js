@@ -255,8 +255,8 @@
   function BoolsService () {
     const map = new Map();
 
-    this.create = (group, table) => {
-      const bools = new BoolsToogle(table);
+    this.create = (group, table, options) => {
+      const bools = new BoolsToogle(table, options);
       map.set(group, bools);
       return bools;
     };
@@ -266,24 +266,31 @@
   }
 
   class BoolsToogle extends EventTarget {
-    constructor(table) {
+    constructor(table, options) {
       super();
       this.state = new Map();
+      this.options = options || {};
       this.coercion = new CoercionService();
       this.init(table || {});
     }
 
     init(table) {
-      Object.keys(table).forEach(key => this.state.set(key, !!table[key]));
+      const fill = this.options.fill;
+      if (Array.isArray(table)) {
+        table.forEach(key => this.state.set(key, fill !== undefined ? fill : false));
+      } else if (typeof table === 'object') {
+        Object.keys(table).forEach(key => this.state.set(key, !!table[key]));
+      }
       this.emit('inited');
       return this;
     }
 
-    toggle(key, val) {
-      [...this.state.keys()].forEach(key => this.state.set(key, false));
-      const value = this.coercion.toBoolean(val);
-      this.state.set(key, val !== undefined ? value : !this.state.get(key));
-      this.emit('change', { key, value });
+    toggle(key, value) {
+      const bool = this.coercion.toBoolean(value);
+      const single = this.options.single;
+      single && [...this.state.keys()].forEach(key => this.state.set(key, false));
+      this.state.set(key, value !== undefined ? bool : !this.state.get(key));
+      this.emit('change', { key, value: bool });
       return this;
     }
 
