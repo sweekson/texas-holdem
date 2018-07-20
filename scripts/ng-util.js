@@ -233,34 +233,17 @@
       return logs.filter(filter.custom);
     };
 
-    this.log = messages => {
-      const log = Array.isArray(messages) ? { messages } : messages;
-      $timeout(() => this.flush(log), 10);
-    };
-
-    this.info = messages => {
-      const log = Array.isArray(messages) ? { messages } : messages;
-      log.level = 'info';
-      this.log(log);
-    };
-
-    this.warn = messages => {
-      const log = Array.isArray(messages) ? { messages } : messages;
-      log.level = 'warn';
-      this.log(log);
-    };
-
-    this.error = messages => {
-      const log = Array.isArray(messages) ? { messages } : messages;
-      log.level = 'error';
-      this.log(log);
-    };
+    /**
+     * @param {Object|Array|String} value
+     */
+    this.log = value => $timeout(() => this.flush(this.format(value)), 10);
+    this.info = value => this.log(Object.assign(this.format(value), { level: 'info' }));
+    this.warn = value => this.log(Object.assign(this.format(value), { level: 'warn' }));
+    this.error = value => this.log(Object.assign(this.format(value), { level: 'error' }));
 
     this.flush = log => {
-      const event = new Event('flush');
-      event.data = log;
       logs.push(log);
-      emitter.dispatchEvent(event);
+      emitter.dispatchEvent(Object.assign(new Event('flush'), { data : log }));
     };
 
     this.clear = _ => logs.splice(0) && emitter.dispatchEvent(new Event('flush'));
