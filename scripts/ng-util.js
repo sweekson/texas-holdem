@@ -312,10 +312,12 @@
   class Dropdowns extends BoolsToogle {
     open(key) {
       this.state.set(key, true);
+      this.emit('change', { key, value: true });
     }
 
     close(key) {
       this.state.set(key, false);
+      this.emit('change', { key, value: false });
     }
   }
 })(angular);
