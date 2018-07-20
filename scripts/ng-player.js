@@ -82,7 +82,7 @@ angular.module('player', ['ngSanitize', 'util'])
 
   game.rx.observable.game.start$.subscribe(_ => {
     const number = game.table.number;
-    tabs.toggle('watch');
+    $scope.tabs.toggle('watch');
     logger.info({
       type: 'game-start',
       messages: ['(Table Created)', `Table: ${number}`],
