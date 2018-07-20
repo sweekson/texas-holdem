@@ -9,7 +9,6 @@
     .directive('clickOnOthers', ClickOnOthersDirective)
     .service('coercion', CoercionService)
     .service('url', UrlService)
-    .service('tabs', TabsService)
     .service('dropdowns', DropdownsService)
     .service('reader', ReaderService)
     .service('downloader', DownloaderService)
@@ -124,24 +123,6 @@
       const matches = location.search.match(regexp);
       if (!matches) { return null; }
       return index !== undefined ? matches[index] : matches;
-    };
-  }
-
-  /* service */
-  function TabsService () {
-    this.tabs = {};
-
-    this.set = (key, bool) => {
-      this.tabs[key] = bool;
-    };
-
-    this.active = key => {
-      return this.tabs[key];
-    };
-
-    this.toggle = key => {
-      Object.keys(this.tabs).forEach(key => this.tabs[key] = false);
-      this.tabs[key] = true;
     };
   }
 
