@@ -1,0 +1,72 @@
+{
+  "eventName": "__start_reload",
+  "data": {
+    "players": [
+      {
+        "playerName": "2c56c360580420d293172f42d85dfbed",
+        "chips": 2940,
+        "folded": false,
+        "allIn": false,
+        "isSurvive": true,
+        "reloadCount": 0
+      },
+      {
+        "playerName": "402a0266c17fc76f8661405554d458a9",
+        "chips": 2880,
+        "folded": false,
+        "allIn": false,
+        "isSurvive": true,
+        "reloadCount": 0
+      },
+      {
+        "playerName": "4a2028eceac5e1f4d252ea13c71ecec6",
+        "chips": 2820,
+        "folded": false,
+        "allIn": false,
+        "isSurvive": true,
+        "reloadCount": 0
+      },
+      {
+        "playerName": "e141bee269e539c3ec476e5046477d8e",
+        "chips": 3000,
+        "folded": false,
+        "allIn": false,
+        "isSurvive": true,
+        "reloadCount": 0
+      },
+      {
+        "playerName": "7796007afc1b5ad3dfc97e7c7a6051b2",
+        "chips": 2880,
+        "folded": false,
+        "allIn": false,
+        "isSurvive": true,
+        "reloadCount": 0
+      },
+      {
+        "playerName": "6e854442cd2a940c9e95941dce4ad598",
+        "chips": 3570,
+        "folded": false,
+        "allIn": false,
+        "isSurvive": true,
+        "reloadCount": 0
+      },
+      {
+        "playerName": "d217d420e818c77100367d2ea49f95c1",
+        "chips": 2990,
+        "folded": false,
+        "allIn": false,
+        "isSurvive": true,
+        "reloadCount": 0
+      },
+      {
+        "playerName": "57eb0415a06a0bef907e4ce2d3d8daac",
+        "chips": 2920,
+        "folded": false,
+        "allIn": false,
+        "isSurvive": true,
+        "reloadCount": 0
+      }
+    ],
+    "tableNumber": 517
+  }
+}

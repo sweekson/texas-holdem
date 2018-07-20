@@ -1,0 +1,146 @@
+{
+  "eventName": "__bet",
+  "data": {
+    "tableNumber": 517,
+    "self": {
+      "playerName": "402a0266c17fc76f8661405554d458a9",
+      "chips": 2880,
+      "folded": false,
+      "allIn": false,
+      "isSurvive": true,
+      "reloadCount": 0,
+      "roundBet": 120,
+      "bet": 0,
+      "minBet": 20,
+      "isOnline": true,
+      "isHuman": false,
+      "cards": [
+        "8H",
+        "AH"
+      ]
+    },
+    "game": {
+      "board": [
+        "2D",
+        "QD",
+        "6H",
+        "KH"
+      ],
+      "roundName": "Turn",
+      "roundCount": 1,
+      "raiseCount": 0,
+      "betCount": 0,
+      "players": [
+        {
+          "playerName": "2c56c360580420d293172f42d85dfbed",
+          "chips": 2940,
+          "folded": true,
+          "allIn": false,
+          "isSurvive": true,
+          "reloadCount": 0,
+          "roundBet": 60,
+          "bet": 0,
+          "isOnline": true,
+          "isHuman": false
+        },
+        {
+          "playerName": "402a0266c17fc76f8661405554d458a9",
+          "chips": 2880,
+          "folded": false,
+          "allIn": false,
+          "isSurvive": true,
+          "reloadCount": 0,
+          "roundBet": 120,
+          "bet": 0,
+          "minBet": 20,
+          "isOnline": true,
+          "isHuman": false,
+          "cards": [
+            "8H",
+            "AH"
+          ]
+        },
+        {
+          "playerName": "4a2028eceac5e1f4d252ea13c71ecec6",
+          "chips": 2880,
+          "folded": false,
+          "allIn": false,
+          "isSurvive": true,
+          "reloadCount": 0,
+          "roundBet": 120,
+          "bet": 0,
+          "isOnline": true,
+          "isHuman": false
+        },
+        {
+          "playerName": "e141bee269e539c3ec476e5046477d8e",
+          "chips": 3000,
+          "folded": true,
+          "allIn": false,
+          "isSurvive": true,
+          "reloadCount": 0,
+          "roundBet": 0,
+          "bet": 0,
+          "isOnline": true,
+          "isHuman": false
+        },
+        {
+          "playerName": "7796007afc1b5ad3dfc97e7c7a6051b2",
+          "chips": 2880,
+          "folded": false,
+          "allIn": false,
+          "isSurvive": true,
+          "reloadCount": 0,
+          "roundBet": 120,
+          "bet": 0,
+          "isOnline": true,
+          "isHuman": false
+        },
+        {
+          "playerName": "6e854442cd2a940c9e95941dce4ad598",
+          "chips": 2880,
+          "folded": false,
+          "allIn": false,
+          "isSurvive": true,
+          "reloadCount": 0,
+          "roundBet": 120,
+          "bet": 0,
+          "isOnline": true,
+          "isHuman": false
+        },
+        {
+          "playerName": "d217d420e818c77100367d2ea49f95c1",
+          "chips": 2990,
+          "folded": true,
+          "allIn": false,
+          "isSurvive": true,
+          "reloadCount": 0,
+          "roundBet": 10,
+          "bet": 0,
+          "isOnline": true,
+          "isHuman": false
+        },
+        {
+          "playerName": "57eb0415a06a0bef907e4ce2d3d8daac",
+          "chips": 2920,
+          "folded": true,
+          "allIn": false,
+          "isSurvive": true,
+          "reloadCount": 0,
+          "roundBet": 80,
+          "bet": 0,
+          "isOnline": true,
+          "isHuman": false
+        }
+      ],
+      "smallBlind": {
+        "playerName": "d217d420e818c77100367d2ea49f95c1",
+        "amount": 10
+      },
+      "bigBlind": {
+        "playerName": "57eb0415a06a0bef907e4ce2d3d8daac",
+        "amount": 20
+      }
+    }
+  }
+}

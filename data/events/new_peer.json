@@ -1,0 +1,37 @@
+{
+  "eventName": "__new_peer",
+  "data": [
+    {
+      "playerName": "2c56c360580420d293172f42d85dfbed",
+      "isOnline": true
+    },
+    {
+      "playerName": "402a0266c17fc76f8661405554d458a9",
+      "isOnline": true
+    },
+    {
+      "playerName": "4a2028eceac5e1f4d252ea13c71ecec6",
+      "isOnline": true
+    },
+    {
+      "playerName": "e141bee269e539c3ec476e5046477d8e",
+      "isOnline": true
+    },
+    {
+      "playerName": "7796007afc1b5ad3dfc97e7c7a6051b2",
+      "isOnline": true
+    },
+    {
+      "playerName": "6e854442cd2a940c9e95941dce4ad598",
+      "isOnline": true
+    },
+    {
+      "playerName": "d217d420e818c77100367d2ea49f95c1",
+      "isOnline": true
+    },
+    {
+      "playerName": "57eb0415a06a0bef907e4ce2d3d8daac",
+      "isOnline": true
+    }
+  ]
+}

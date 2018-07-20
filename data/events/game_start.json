@@ -1,0 +1,8 @@
+{
+  "eventName": "__game_start",
+  "data": {
+    "msg": "table 517 started successfully",
+    "tableNumber": 517,
+    "error_code": 0
+  }
+}

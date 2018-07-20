@@ -1,0 +1,7 @@
+{
+  "eventName": "__pairing",
+  "data": {
+    "waitingCount": 2,
+    "status": "waiting"
+  }
+}
