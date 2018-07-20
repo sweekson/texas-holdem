@@ -54,14 +54,14 @@ angular.module('player', ['ngSanitize', 'util'])
   this.push = action => this.actions.push(action);
 })
 
-.controller('RootCtrl', ($scope, $window, logger, tabs, game) => {
+.controller('RootCtrl', ($scope, $window, logger, bools, game) => {
   $scope.logger = logger;
-  $scope.tabs = tabs;
+  $scope.tabs = bools.create('tabs', {
+    connect: true,
+    watch: false
+  });
   $scope.game = game;
   $window.game = game;
-
-  tabs.set('connect', true);
-  tabs.set('watch', false);
 
   game.rx.observable.events$.subscribe(console.log);
 
