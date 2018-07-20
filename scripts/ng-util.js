@@ -206,12 +206,12 @@
     this.filter = filter;
 
     this.format = value => {
-      if (typeof value === 'object') {
-        return value;
-      }
-
       if (Array.isArray(value)) {
         return { messages: value };
+      }
+
+      if (typeof value === 'object') {
+        return value;
       }
 
       return { messages: [value] };
