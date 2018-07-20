@@ -72,7 +72,7 @@ angular.module('player', ['ngSanitize', 'util'])
   });
 
   game.rx.observable.table.joined$.subscribe(_ => {
-    tabs.toggle('watch');
+    $scope.tabs.toggle('watch');
     logger.info({
       type: 'join-table',
       messages: ['(JOINED)'],
