@@ -1,3 +1,5 @@
+/* global Event EventTarget Blob MutationObserver URL */
+/* global location angular */
 
 angular.module('util', [])
 
