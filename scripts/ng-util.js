@@ -90,6 +90,12 @@ angular.module('util', [])
   };
 })
 
+.service('coercion', function () {
+  this.toBoolean = value => value != null && `${value}` !== 'false';
+  this.toNumber = value => !isNaN(parseFloat(value)) && !isNaN(Number(value));
+  this.toArray = value => Array.isArray(value) ? value : [value];
+})
+
 .service('url', function () {
   this.parser = {};
 
