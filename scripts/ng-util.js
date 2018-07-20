@@ -13,7 +13,8 @@
     .service('dropdowns', DropdownsService)
     .service('reader', ReaderService)
     .service('downloader', DownloaderService)
-    .service('logger', LoggerService);
+    .service('logger', LoggerService)
+    .service('bools', BoolsService);
 
   /* directive */
   function NgFileModelDirective () {
@@ -289,5 +290,52 @@
     this.clear = _ => logs.splice(0) && emitter.dispatchEvent(new Event('flush'));
     this.onflush = callback => emitter.addEventListener('flush', callback);
     this.onchange = callback => emitter.addEventListener('change', callback);
+  }
+
+  /* service */
+  function BoolsService () {
+    const map = new Map();
+
+    this.create = (group, table) => {
+      const bools = new Bools(table);
+      map.set(group, bools);
+      return bools;
+    };
+
+    this.get = group => map.get(group);
+    this.delete = group => map.delete(group);
+  }
+
+  class Bools extends EventTarget {
+    constructor(table) {
+      this.state = new Map();
+      this.init(table || {});
+    }
+
+    init(table) {
+      Object.keys(table).forEach(key => this.state.set(key, !!table[key]));
+      this.emit('inited');
+      return this;
+    }
+
+    toggle(key, bool) {
+      this.state.set(key, bool !== undefined ? !!bool : this.state.get(key));
+      this.emit('change', { key, value: !!bool });
+      return this;
+    }
+
+    active (key) {
+      return this.state.get(key);
+    }
+
+    emit (type, data) {
+      const event = new Event(type);
+      event.data = data;
+      this.dispatchEvent(event);
+    }
+
+    on (type, callback) {
+      this.addEventListener(type, callback);
+    }
   }
 })(angular);
