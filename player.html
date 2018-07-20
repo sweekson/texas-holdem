@@ -225,8 +225,15 @@
 
 				<li>
 					<a href="#" class="form-check">
-						<input id="game-start-over" type="checkbox" ng-checked="filter.type.active('game-start-over')" ng-click="filter.type.toggle('game-start-over')">
-						<label for="game-start-over">Game Start / Over</label>
+						<input id="game-start" type="checkbox" ng-checked="filter.type.active('game-start')" ng-click="filter.type.toggle('game-start')">
+						<label for="game-start">Game Start</label>
+					</a>
+				</li>
+
+				<li>
+					<a href="#" class="form-check">
+						<input id="game-over" type="checkbox" ng-checked="filter.type.active('game-over')" ng-click="filter.type.toggle('game-over')">
+						<label for="game-over">Game Over</label>
 					</a>
 				</li>
 
@@ -234,6 +241,13 @@
 					<a href="#" class="form-check">
 						<input id="round-start" type="checkbox" ng-checked="filter.type.active('round-start')" ng-click="filter.type.toggle('round-start')">
 						<label for="round-start">New Round</label>
+					</a>
+				</li>
+
+				<li>
+					<a href="#" class="form-check">
+						<input id="round-stage" type="checkbox" ng-checked="filter.type.active('round-stage')" ng-click="filter.type.toggle('round-stage')">
+						<label for="round-stage">Round Stage</label>
 					</a>
 				</li>
 

@@ -87,7 +87,7 @@ angular.module('player', ['ngSanitize', 'util'])
     const number = game.table.number;
     tabs.toggle('watch');
     logger.info({
-      type: 'game-start-over',
+      type: 'game-start',
       messages: ['(Table Created)', `Table: ${number}`],
     });
     $scope.$apply();
@@ -95,12 +95,12 @@ angular.module('player', ['ngSanitize', 'util'])
 
   game.rx.observable.game.over$.subscribe(_ => {
     logger.info({
-      type: 'game-start-over',
+      type: 'game-over',
       messages: ['(GAME OVER)'],
     });
     game.players.winners.forEach(({ name, chips }) => {
       logger.info({
-        type: 'game-start-over',
+        type: 'game-over',
         messages: ['(WINNER)', `Player: ${name}`, `Chips: ${chips}`],
       });
     });
@@ -281,7 +281,8 @@ angular.module('player', ['ngSanitize', 'util'])
   const types = [
     'system',
     'join-table',
-    'game-start-over',
+    'game-start',
+    'game-over',
     'round-start',
     'round-stage',
     'round-end',
