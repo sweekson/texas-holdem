@@ -277,7 +277,7 @@ angular.module('player', ['ngSanitize', 'util'])
   game.rx.observable.round.end$.subscribe(_ => $scope.$apply());
 })
 
-.controller('LogsToolbarCtrl', ($scope, dropdowns, logger) => {
+.controller('LogsToolbarCtrl', ($scope, bools, dropdowns, logger) => {
   const types = [
     'system',
     'join-table',
@@ -288,11 +288,9 @@ angular.module('player', ['ngSanitize', 'util'])
     'round-end',
     'show-action'
   ];
-
-  types.forEach(type => logger.filter.type.set(type, true));
+  $scope.filters = bools.create('filters', types, { fill: true });
 
   $scope.dropdowns = dropdowns.create('filters', { events: false });
-  $scope.filter = logger.filter;
   $scope.all = true;
   $scope.$watch('all', all => logger.filter.custom = all ? (_ => true) : (log => log.self));
 })
