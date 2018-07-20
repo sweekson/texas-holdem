@@ -290,7 +290,7 @@ angular.module('player', ['ngSanitize', 'util'])
   ];
   $scope.filters = bools.create('filters', types, { fill: true });
 
-  $scope.dropdowns = dropdowns.create('filters', { events: false });
+  $scope.dropdowns = dropdowns.create('filters', { events: false }, { single: true });
   $scope.all = true;
   $scope.$watch('all', all => logger.filter.custom = all ? (_ => true) : (log => log.self));
 })
