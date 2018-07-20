@@ -56,7 +56,7 @@ class PokerBaseBot extends Bot {
 
   react(game) {
     const selfCards = game.self.cards;
-    const allCards = game.self.cards.concat(game.board);
+    const allCards = game.self.cards.concat(game.table.cards).filter(v => v);
 
     if (allCards.length === 2) {
       return this.respond({ action: 'call' });
@@ -151,7 +151,7 @@ class PokerBaseBot extends Bot {
       return;
     }
 
-    var winprob = game.self.min / game.table.bet;
+    var winprob = game.self.minBet / game.table.bet;
 
     if (isSantiao || pairNumber > 1) {
       if (isSantiao && (pairNumber > 1 || maxPairValue > '9') && this.status !== PokerBaseBot.statuses.danger)
@@ -178,7 +178,7 @@ class PokerBaseBot extends Bot {
 
     if (allCards.length > 5)
       this.respond({ action: 'fold' });
-    else if (game.self.min < game.self.chips * .4)
+    else if (game.self.minBet < game.self.chips * .4)
       this.respond({ action: 'call' });
     else
       this.respond({ action: 'fold' });
@@ -190,9 +190,28 @@ PokerBaseBot.statuses = {
   danger: 2
 };
 
+class PlayerChipsReward {
+  constructor(chips) {
+    this.chips = chips;
+    this.final = chips;
+    this.changes = 0;
+  }
+
+  refresh(chips) {
+    this.chips = chips;
+    this.final = chips;
+  }
+
+  resolve(final) {
+    this.final = final;
+    this.changes = final - this.chips;
+  }
+}
+
 class AnonymousPlayer {
   constructor(data) {
     this.assign(data);
+    this.reward = new PlayerChipsReward(this.chips);
   }
 
   assign(data) {
@@ -209,17 +228,13 @@ class Player extends AnonymousPlayer {
     this.cards = [0, 0];
     this.self = true;
   }
-
-  assign(data) {
-    super.assign(data);
-    this.cards = data.cards;
-  }
 }
 
 Player.format = data => {
   const name = data.playerName;
   const chips = data.chips;
-  const min = data.minBet;
+  const bet = data.bet;
+  const minBet = data.minBet;
   const hand = data.hand;
   const cards = Player.cards(data.cards);
   const folded = data.folded;
@@ -227,7 +242,7 @@ Player.format = data => {
   const online = data.isOnline;
   const survive = data.isSurvive;
   const human = data.isHuman;
-  return { name, chips, min, hand, cards, folded, allin, online, survive, human };
+  return { name, chips, bet, minBet, hand, cards, folded, allin, online, survive, human };
 };
 
 Player.cards = cards => {
@@ -238,16 +253,37 @@ class Players {
   constructor() {
     this.list = [];
     this.map = new Map();
+    this.wins = new Map();
     this.winners = [];
   }
 
   assign(list) {
     this.list = list.map(AnonymousPlayer.create);
-    this.list.forEach(player => this.map.set(player.name, player));
+    this.list.forEach(player => {
+      player.reward.refresh(player.chips + player.bet);
+      this.map.set(player.name, player);
+      this.wins.set(player.name, 0);
+    });
+  }
+
+  refresh(list) {
+    const table = new Map();
+    list.forEach(data => table.set(data.playerName, data));
+    this.list.forEach(player => player.assign(table.get(player.name)));
+  }
+
+  resolve(list) {
+    const table = new Map();
+    list.forEach(data => table.set(data.playerName, data));
+    this.list.forEach(player => {
+      player.reward.resolve(player.chips);
+      player.reward.changes > 0 && this.wins.set(player.name, this.wins.get(player.name) + 1);
+    });
   }
 
   set(name, data) {
-    this.map.get(name).assign(data);
+    const player = this.map.get(name);
+    this.map.set(name, Object.assign(player, data));
   }
 
   update(name, prop, value) {
@@ -276,6 +312,10 @@ class GameTable {
   assign(data) {
     Object.assign(this, GameTable.format(data));
     this.ready = true;
+  }
+
+  board(board) {
+    this.cards = GameTable.board(board);
   }
 }
 
@@ -434,9 +474,9 @@ class PokerGame extends EventTarget {
 
     observable.game.over$.subscribe(data => {
       ++this.games;
-      this.players.assign(data.players);
-      Object.assign(this.player, this.players.map.get(this.player.name));
-      this.players.update(this.player.name, 'self', true);
+      this.players.refresh(data.players);
+      this.player.assign(data.players.find(v => v.playerName === this.player.name));
+      this.players.set(this.player.name, this.player);
       this.players.winners = data.winners.map(data => new PlayerWinner(data));
       this.options.rejoin && this.games < this.options.games && this.join();
     });
@@ -444,43 +484,45 @@ class PokerGame extends EventTarget {
     observable.table.joined$.subscribe(data => {
       this.table.assign(data.table);
       this.players.assign(data.players);
-      Object.assign(this.player, this.players.map.get(this.player.name));
-      this.players.update(this.player.name, 'self', true);
+      this.player.assign(data.players.find(v => v.playerName === this.player.name));
+      this.player.reward.refresh(this.player.chips + this.player.bet);
+      this.players.set(this.player.name, this.player);
     });
 
     observable.round.start$.subscribe(data => {
       this.table.assign(data.table);
       this.players.assign(data.players);
-      Object.assign(this.player, this.players.map.get(this.player.name));
-      this.players.update(this.player.name, 'self', true);
+      this.player.assign(data.players.find(v => v.playerName === this.player.name));
+      this.player.reward.refresh(this.player.chips + this.player.bet);
+      this.players.set(this.player.name, this.player);
     });
 
     observable.round.deal$.subscribe(data => {
       this.table.assign(data.table);
-      this.players.assign(data.players);
-      Object.assign(this.player, this.players.map.get(this.player.name));
-      this.players.update(this.player.name, 'self', true);
+      this.players.refresh(data.players);
+      this.player.assign(data.players.find(v => v.playerName === this.player.name));
+      this.players.set(this.player.name, this.player);
     });
 
     observable.round.end$.subscribe(data => {
       this.table.assign(data.table);
-      this.players.assign(data.players);
-      Object.assign(this.player, this.players.map.get(this.player.name));
-      this.players.update(this.player.name, 'self', true);
+      this.players.refresh(data.players);
+      this.players.resolve(data.players);
+      this.player.assign(data.players.find(v => v.playerName === this.player.name));
+      this.player.reward.resolve(this.player.chips);
+      this.players.set(this.player.name, this.player);
     });
 
     observable.player.action$.subscribe(({ game, self }) => {
-      const player = Object.assign({}, this.player, Player.format(self));
-      const board = game.board;
-      const data = Object.assign({}, this, { self: player, board });
-      this.bot.react(data);
+      this.table.board(game.board);
+      this.player.assign(self);
+      this.bot.react(Object.assign({}, this, { self: this.player }));
     });
 
     observable.player.bet$.subscribe(({ game, self }) => {
-      const player = Object.assign({}, this.player, Player.format(self));
-      const board = game.board;
-      const data = Object.assign({}, this, { self: player, board });
-      this.bot.react(data);
+      this.table.board(game.board);
+      this.player.assign(self);
+      this.bot.react(Object.assign({}, this, { self: this.player }));
     });
 
     this.bot.init(this);
