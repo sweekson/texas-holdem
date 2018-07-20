@@ -1,0 +1,259 @@
+{
+  "eventName": "__game_over",
+  "data": {
+    "players": [
+      {
+        "playerName": "2c56c360580420d293172f42d85dfbed",
+        "chips": 1280,
+        "folded": true,
+        "allIn": false,
+        "cards": [
+          "9S",
+          "7S"
+        ],
+        "isSurvive": true,
+        "reloadCount": 0,
+        "roundBet": 0,
+        "bet": 0,
+        "isOnline": true,
+        "isHuman": false
+      },
+      {
+        "playerName": "402a0266c17fc76f8661405554d458a9",
+        "chips": 0,
+        "folded": false,
+        "allIn": false,
+        "cards": [],
+        "isSurvive": false,
+        "reloadCount": 0,
+        "roundBet": 0,
+        "bet": 0,
+        "isOnline": true,
+        "isHuman": false
+      },
+      {
+        "playerName": "4a2028eceac5e1f4d252ea13c71ecec6",
+        "chips": 0,
+        "folded": false,
+        "allIn": false,
+        "cards": [],
+        "isSurvive": false,
+        "reloadCount": 0,
+        "roundBet": 0,
+        "bet": 0,
+        "isOnline": true,
+        "isHuman": false
+      },
+      {
+        "playerName": "e141bee269e539c3ec476e5046477d8e",
+        "chips": 8480,
+        "folded": true,
+        "allIn": false,
+        "cards": [
+          "JC",
+          "AH"
+        ],
+        "isSurvive": true,
+        "reloadCount": 0,
+        "roundBet": 0,
+        "bet": 0,
+        "isOnline": true,
+        "isHuman": false
+      },
+      {
+        "playerName": "7796007afc1b5ad3dfc97e7c7a6051b2",
+        "chips": 920,
+        "folded": true,
+        "allIn": false,
+        "cards": [
+          "TC",
+          "JS"
+        ],
+        "isSurvive": true,
+        "reloadCount": 0,
+        "roundBet": 0,
+        "bet": 0,
+        "isOnline": true,
+        "isHuman": false
+      },
+      {
+        "playerName": "6e854442cd2a940c9e95941dce4ad598",
+        "chips": 8141,
+        "folded": true,
+        "allIn": false,
+        "cards": [
+          "9C",
+          "TS"
+        ],
+        "isSurvive": true,
+        "reloadCount": 0,
+        "roundBet": 0,
+        "bet": 0,
+        "isOnline": true,
+        "isHuman": false
+      },
+      {
+        "playerName": "d217d420e818c77100367d2ea49f95c1",
+        "chips": 4379,
+        "folded": true,
+        "allIn": false,
+        "cards": [
+          "3C",
+          "7C"
+        ],
+        "isSurvive": true,
+        "reloadCount": 0,
+        "roundBet": 0,
+        "bet": 0,
+        "isOnline": true,
+        "isHuman": false
+      },
+      {
+        "playerName": "57eb0415a06a0bef907e4ce2d3d8daac",
+        "chips": 800,
+        "folded": true,
+        "allIn": false,
+        "cards": [
+          "7H",
+          "TD"
+        ],
+        "isSurvive": true,
+        "reloadCount": 0,
+        "roundBet": 0,
+        "bet": 0,
+        "isOnline": true,
+        "isHuman": false
+      }
+    ],
+    "table": {
+      "tableNumber": 517,
+      "status": 3,
+      "roundName": "Showdown",
+      "board": [
+        "AS",
+        "2H",
+        "5S",
+        "4D",
+        "2C"
+      ],
+      "roundCount": 27,
+      "raiseCount": 0,
+      "betCount": 1,
+      "totalBet": 0,
+      "initChips": 3000,
+      "maxReloadCount": 0,
+      "smallBlind": {
+        "playerName": "e141bee269e539c3ec476e5046477d8e",
+        "amount": 80
+      },
+      "bigBlind": {
+        "playerName": "7796007afc1b5ad3dfc97e7c7a6051b2",
+        "amount": 160
+      }
+    },
+    "winners": [
+      {
+        "playerName": "e141bee269e539c3ec476e5046477d8e",
+        "hand": {
+          "cards": [
+            "JC",
+            "AH",
+            "AS",
+            "2H",
+            "5S",
+            "4D",
+            "2C"
+          ],
+          "rank": 88.0256,
+          "message": "Two Pair"
+        },
+        "chips": 8480
+      },
+      {
+        "playerName": "6e854442cd2a940c9e95941dce4ad598",
+        "hand": {
+          "cards": [
+            "9C",
+            "TS",
+            "AS",
+            "2H",
+            "5S",
+            "4D",
+            "2C"
+          ],
+          "rank": 9.224,
+          "message": "Pair"
+        },
+        "chips": 8141
+      },
+      {
+        "playerName": "d217d420e818c77100367d2ea49f95c1",
+        "hand": {
+          "cards": [
+            "3C",
+            "7C",
+            "AS",
+            "2H",
+            "5S",
+            "4D",
+            "2C"
+          ],
+          "rank": 113,
+          "message": "Straight"
+        },
+        "chips": 4379
+      },
+      {
+        "playerName": "2c56c360580420d293172f42d85dfbed",
+        "hand": {
+          "cards": [
+            "9S",
+            "7S",
+            "AS",
+            "2H",
+            "5S",
+            "4D",
+            "2C"
+          ],
+          "rank": 9.2128,
+          "message": "Pair"
+        },
+        "chips": 1280
+      },
+      {
+        "playerName": "7796007afc1b5ad3dfc97e7c7a6051b2",
+        "hand": {
+          "cards": [
+            "TC",
+            "JS",
+            "AS",
+            "2H",
+            "5S",
+            "4D",
+            "2C"
+          ],
+          "rank": 9.2432,
+          "message": "Pair"
+        },
+        "chips": 920
+      },
+      {
+        "playerName": "57eb0415a06a0bef907e4ce2d3d8daac",
+        "hand": {
+          "cards": [
+            "7H",
+            "TD",
+            "AS",
+            "2H",
+            "5S",
+            "4D",
+            "2C"
+          ],
+          "rank": 9.2192,
+          "message": "Pair"
+        },
+        "chips": 800
+      }
+    ]
+  }
+}
