@@ -205,6 +205,18 @@ angular.module('util', [])
 
   this.filter = filter;
 
+  this.format = value => {
+    if (typeof value === 'object') {
+      return value;
+    }
+
+    if (Array.isArray(value)) {
+      return { messages: value };
+    }
+
+    return { messages: [value] };
+  };
+
   this.logs = (compare = {}) => {
     if (compare.type && compare.level) {
       return logs.filter(({ type, level }) => filters.types[type] && filters.levels[level]).filter(filter.custom);
