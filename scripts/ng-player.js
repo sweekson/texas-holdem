@@ -56,10 +56,7 @@ angular.module('player', ['ngSanitize', 'util'])
 
 .controller('RootCtrl', ($scope, $window, logger, bools, game) => {
   $scope.logger = logger;
-  $scope.tabs = bools.create('tabs', {
-    connect: true,
-    watch: false
-  });
+  $scope.tabs = bools.create('tabs', {  connect: true, watch: false }, { single: true });
   $scope.game = game;
   $window.game = game;
 
@@ -289,7 +286,6 @@ angular.module('player', ['ngSanitize', 'util'])
     'show-action'
   ];
   $scope.filters = bools.create('filters', types, { fill: true });
-
   $scope.dropdowns = dropdowns.create('filters', { events: false }, { single: true });
   $scope.all = true;
   $scope.$watch('all', all => logger.filter.custom = all ? (_ => true) : (log => log.self));
