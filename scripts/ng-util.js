@@ -128,21 +128,16 @@
 
   /* service */
   function DropdownsService () {
-    this.dropdowns = {};
+    const map = new Map();
 
-    this.set = (key, bool) => {
-      this.dropdowns[key] = bool;
+    this.create = (group, table) => {
+      const instance = new Dropdowns(table);
+      map.set(group, instance);
+      return instance;
     };
 
-    this.open = key => {
-      this.dropdowns[key] = true;
-    };
-
-    this.close = key => {
-      this.dropdowns[key] = false;
-    };
-
-    this.active = key => this.dropdowns[key];
+    this.get = group => map.get(group);
+    this.delete = group => map.delete(group);
   }
 
   /* service */
@@ -321,6 +316,16 @@
 
     on (type, callback) {
       this.addEventListener(type, callback);
+    }
+  }
+
+  class Dropdowns extends BoolsToogle {
+    open(key) {
+      this.state.set(key, true);
+    }
+
+    close(key) {
+      this.state.set(key, false);
     }
   }
 })(angular);

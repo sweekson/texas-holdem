@@ -290,9 +290,8 @@ angular.module('player', ['ngSanitize', 'util'])
   ];
 
   types.forEach(type => logger.filter.type.set(type, true));
-  dropdowns.set('events', false);
 
-  $scope.dropdowns = dropdowns;
+  $scope.dropdowns = dropdowns.create('filters', { events: false });
   $scope.filter = logger.filter;
   $scope.all = true;
   $scope.$watch('all', all => logger.filter.custom = all ? (_ => true) : (log => log.self));
