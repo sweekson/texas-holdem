@@ -66,7 +66,7 @@ angular.module('player', ['ngSanitize', 'util'])
     const name = game.player.name;
     logger.info({
       type: 'join-table',
-      messages: ['(SEND JOIN)', `Player: ${name}`],
+      messages: ['(SEND JOIN)', 'Waiting for pairing.', `Player: ${name}`],
     });
     $scope.$apply();
   });
