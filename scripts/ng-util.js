@@ -297,7 +297,7 @@
     const map = new Map();
 
     this.create = (group, table) => {
-      const bools = new Bools(table);
+      const bools = new BoolsToogle(table);
       map.set(group, bools);
       return bools;
     };
@@ -306,9 +306,11 @@
     this.delete = group => map.delete(group);
   }
 
-  class Bools extends EventTarget {
+  class BoolsToogle extends EventTarget {
     constructor(table) {
+      super();
       this.state = new Map();
+      this.coercion = new CoercionService();
       this.init(table || {});
     }
 
@@ -318,9 +320,11 @@
       return this;
     }
 
-    toggle(key, bool) {
-      this.state.set(key, bool !== undefined ? !!bool : this.state.get(key));
-      this.emit('change', { key, value: !!bool });
+    toggle(key, val) {
+      [...this.state.keys()].forEach(key => this.state.set(key, false));
+      const value = this.coercion.toBoolean(val);
+      this.state.set(key, val !== undefined ? value : !this.state.get(key));
+      this.emit('change', { key, value });
       return this;
     }
 
