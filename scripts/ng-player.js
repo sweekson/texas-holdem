@@ -276,6 +276,7 @@ angular.module('player', ['ngSanitize', 'util'])
 
 .controller('LogsToolbarCtrl', ($scope, bools, dropdowns, logger) => {
   const types = [
+    'all',
     'system',
     'join-table',
     'game-start',
@@ -287,18 +288,25 @@ angular.module('player', ['ngSanitize', 'util'])
   ];
   $scope.filters = bools.create('filters', types, { fill: true });
   $scope.dropdowns = dropdowns.create('filters', { events: false }, { single: true });
-  $scope.all = true;
-  $scope.$watch('all', all => logger.filter.custom = all ? (_ => true) : (log => log.self));
 })
 
-.controller('LogsCtrl', ($scope, logger) => {
+.controller('LogsCtrl', ($scope, logger, bools) => {
   $scope.logs = logger.logs({ type: true });
+  $scope.filters = bools.get('filters');
 
   logger.onflush(e => {
-    $scope.logs = logger.logs({ type: true });
+    $scope.logs = logger.logs().filter(log => {
+      const active = $scope.filters.active(log.type);
+      const all = $scope.filters.active('all');
+      return all ? active : active && log.self;
+    });
   });
 
-  logger.onchange(e => {
-    $scope.logs = logger.logs({ type: true });
+  $scope.filters.on('change', _ => {
+    $scope.logs = logger.logs().filter(log => {
+      const active = $scope.filters.active(log.type);
+      const all = $scope.filters.active('all');
+      return all ? active : active && log.self;
+    });
   });
 });

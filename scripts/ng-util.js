@@ -173,37 +173,6 @@
   function LoggerService ($timeout) {
     const emitter = new EventTarget();
     const logs = [];
-    const filter = {
-      _custom: _ => true,
-      type: {},
-      level: {},
-      set custom (handler) {
-        this._custom = handler;
-        emitter.dispatchEvent(new Event('change'));
-      },
-      get custom () {
-        return this._custom;
-      }
-    };
-    const filters = { types: {}, levels: {} };
-
-    filter.type.set = (key, bool) => (filters.types[key] = bool);
-    filter.type.active = key => filters.types[key];
-
-    filter.type.toggle = (key, bool) => {
-      filters.types[key] = bool !== undefined ? bool : !filters.types[key];
-      emitter.dispatchEvent(new Event('change'));
-    };
-
-    filter.level.set = (key, bool) => (filters.levels[key] = bool);
-    filter.level.active = key => filters.levels[key];
-
-    filter.level.toggle = (key, bool) => {
-      filters.levels[key] = bool !== undefined ? bool : !filters.levels[key];
-      emitter.dispatchEvent(new Event('change'));
-    };
-
-    this.filter = filter;
 
     this.format = value => {
       if (Array.isArray(value)) {
@@ -217,21 +186,7 @@
       return { messages: [value] };
     };
 
-    this.logs = (compare = {}) => {
-      if (compare.type && compare.level) {
-        return logs.filter(({ type, level }) => filters.types[type] && filters.levels[level]).filter(filter.custom);
-      }
-
-      if (compare.type) {
-        return logs.filter(({ type }) => filters.types[type]).filter(filter.custom);
-      }
-
-      if (compare.level) {
-        return logs.filter(({ level }) => filters.levels[level]).filter(filter.custom);
-      }
-
-      return logs.filter(filter.custom);
-    };
+    this.logs = _ => logs.slice(0);
 
     /**
      * @param {Object|Array|String} value

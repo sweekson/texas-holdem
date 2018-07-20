@@ -268,13 +268,13 @@
 		</div>
 
 		<div class="btn-group" role="group">
-			<label class="btn btn-default" ng-class="{ active: all }">
-				<input name="all" type="radio" class="hide" ng-model="all" ng-value="true" ng-checked="all">
+			<label class="btn btn-default" ng-class="{ active: filters.active('all') }">
+				<input type="radio" class="hide" ng-value="true" ng-checked="filters.active('all')" ng-click="filters.toggle('all', !0)">
 				All
 			</label>
 
-			<label class="btn btn-default" ng-class="{ active: !all }">
-				<input name="all" type="radio" class="hide" ng-model="all" ng-value="false" ng-checked="!all">
+			<label class="btn btn-default" ng-class="{ active: !filters.active('all') }">
+				<input type="radio" class="hide" ng-value="false" ng-checked="!filters.active('all')" ng-click="filters.toggle('all', !1)">
 				Only Mine
 			</label>
 		</div>
