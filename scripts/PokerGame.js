@@ -540,7 +540,7 @@ class PokerGame extends EventTarget {
     });
 
     this.bot.init(this);
-    this.bot.answer$.subscribe(data => this[data.action]());
+    this.bot.answer$.subscribe(data => this[data.action](data));
   }
 
   configure(options) {
@@ -550,8 +550,8 @@ class PokerGame extends EventTarget {
     this.bot = this.options.bot || this.bot;
   }
 
-  bet(amount) {
-    const data = { action: 'bet', amount: amount || this.options.bet };
+  bet(data) {
+    const data = { action: 'bet', amount: data.amount || this.options.bet };
     this.send(PokerGame.actions.action, data);
   }
 
