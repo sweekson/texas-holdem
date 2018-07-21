@@ -44,14 +44,23 @@ angular.module('player', ['ngSanitize', 'util'])
 
 .service('collector', function () {
   const games = new Map();
+  const history = [];
 
   this.game = table => games.set(table.number, table);
 
-  this.over = data => {
-
+  this.action = (table, data) => {
+    const game = games.get(table);
+    game.actions.push(data);
   };
 
-  this.push = action => this.actions.push(action);
+  this.over = (table, data) => {
+    const game = games.get(table);
+    game.winners = data.winners;
+    history.push(game);
+    games.delete(table);
+  };
+
+  this.history = _ => history.slice(0);
 })
 
 .controller('RootCtrl', ($scope, $window, logger, bools, game) => {
