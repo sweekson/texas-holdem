@@ -340,9 +340,9 @@ GameTable.format = data => {
 class BlindBet {}
 
 BlindBet.format = data => {
-  const name = data.playerName;
+  const player = data.playerName;
   const amount = data.amount;
-  return { name, amount };
+  return { player, amount };
 };
 
 class PlayerAction {
