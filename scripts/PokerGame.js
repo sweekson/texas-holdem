@@ -293,7 +293,7 @@ class Players {
 
 class PlayerWinner {
   constructor(data) {
-    this.name = data.playerName;
+    this.player = data.playerName;
     this.chips = data.chips;
     this.hand = data.hand;
   }

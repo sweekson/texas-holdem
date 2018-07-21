@@ -111,10 +111,10 @@ angular.module('player', ['ngSanitize', 'util'])
       type: 'game-over',
       messages: ['(GAME OVER)'],
     });
-    game.players.winners.forEach(({ name, chips }) => {
+    game.players.winners.forEach(({ player, chips }) => {
       logger.info({
         type: 'game-over',
-        messages: ['(WINNER)', `Player: ${name}`, `Chips: ${chips}`],
+        messages: ['(WINNER)', `Player: ${player}`, `Chips: ${chips}`],
       });
     });
     $scope.$apply();
