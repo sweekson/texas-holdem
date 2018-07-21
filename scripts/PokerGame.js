@@ -477,70 +477,16 @@ class PokerGame extends EventTarget {
 
   init() {
     const observable = this.rx.observable;
+    const bot = this.bot;
 
-    observable.socket.connected$.subscribe(_ => setTimeout(() => this.join(), 50));
+    observable.socket.connected$.subscribe(_ => setTimeout(_ => this.join(), 50));
     observable.socket.disconnected$.subscribe(_ => this.connected = false);
+    observable.game.start$.subscribe(data => this.table.number = data.tableNumber);
     observable.round.reload$.subscribe(_ => this.reload());
+    observable.messages$.subscribe(data => this.refresh(data.type, data.data));
 
-    observable.game.start$.subscribe(data => {
-      this.table.number = data.tableNumber;
-    });
-
-    observable.game.over$.subscribe(data => {
-      ++this.games;
-      this.players.refresh(data.players);
-      this.player.assign(data.players.find(v => v.playerName === this.player.name));
-      this.players.set(this.player.name, this.player);
-      this.players.winners = data.winners.map(data => new PlayerWinner(data));
-      this.options.rejoin && this.games < this.options.games && this.join();
-    });
-
-    observable.table.joined$.subscribe(data => {
-      this.table.assign(data.table);
-      this.players.assign(data.players);
-      this.player.assign(data.players.find(v => v.playerName === this.player.name));
-      this.player.reward.refresh(this.player.chips + this.player.bet);
-      this.players.set(this.player.name, this.player);
-    });
-
-    observable.round.start$.subscribe(data => {
-      this.table.assign(data.table);
-      this.players.assign(data.players);
-      this.player.assign(data.players.find(v => v.playerName === this.player.name));
-      this.player.reward.refresh(this.player.chips + this.player.bet);
-      this.players.set(this.player.name, this.player);
-    });
-
-    observable.round.deal$.subscribe(data => {
-      this.table.assign(data.table);
-      this.players.refresh(data.players);
-      this.player.assign(data.players.find(v => v.playerName === this.player.name));
-      this.players.set(this.player.name, this.player);
-    });
-
-    observable.round.end$.subscribe(data => {
-      this.table.assign(data.table);
-      this.players.refresh(data.players);
-      this.players.resolve(data.players);
-      this.player.assign(data.players.find(v => v.playerName === this.player.name));
-      this.player.reward.resolve(this.player.chips);
-      this.players.set(this.player.name, this.player);
-    });
-
-    observable.player.action$.subscribe(({ game, self }) => {
-      this.table.board(game.board);
-      this.player.assign(self);
-      this.bot.react(Object.assign({}, this, { self: this.player }));
-    });
-
-    observable.player.bet$.subscribe(({ game, self }) => {
-      this.table.board(game.board);
-      this.player.assign(self);
-      this.bot.react(Object.assign({}, this, { self: this.player }));
-    });
-
-    this.bot.init(this);
-    this.bot.answer$.subscribe(data => this[data.action](data));
+    bot.init(this);
+    bot.answer$.subscribe(data => this[data.action](data));
   }
 
   configure(options) {
@@ -548,6 +494,56 @@ class PokerGame extends EventTarget {
     this.server = this.options.server || thie.server;
     this.player = this.options.player ? new Player(this.options.player) : this.player;
     this.bot = this.options.bot || this.bot;
+  }
+
+  refresh(event, data) {
+    const { options, table, players, player } = this;
+
+    switch (event) {
+      case PokerGame.messages.new_round:
+      case PokerGame.messages.join:
+        table.assign(data.table);
+        players.assign(data.players);
+        player.assign(data.players.find(v => v.playerName === player.name));
+        player.reward.refresh(player.chips + player.bet);
+        players.set(player.name, player);
+        break;
+
+      case PokerGame.messages.deal:
+        table.assign(data.table);
+        players.refresh(data.players);
+        player.assign(data.players.find(v => v.playerName === player.name));
+        players.set(player.name, player);
+          break;
+
+      case PokerGame.messages.round_end:
+        table.assign(data.table);
+        players.refresh(data.players);
+        players.resolve(data.players);
+        player.assign(data.players.find(v => v.playerName === player.name));
+        player.reward.resolve(player.chips);
+        players.set(player.name, player);
+          break;
+
+      case PokerGame.messages.game_over:
+        ++this.games;
+        players.refresh(data.players);
+        player.assign(data.players.find(v => v.playerName === player.name));
+        players.set(player.name, player);
+        players.winners = data.winners.map(data => new PlayerWinner(data));
+        options.rejoin && this.games < options.games && this.join();
+          break;
+
+      case PokerGame.messages.action:
+      case PokerGame.messages.bet:
+        table.board(data.game.board);
+        player.assign(data.self);
+        this.bot.react(Object.assign({}, this, { self: player }));
+
+          break;
+      default:
+        break;
+    }
   }
 
   bet(data) {
