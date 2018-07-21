@@ -135,7 +135,9 @@
           const val = this.parser.search(pattern, param.match);
           return format ? format(val) : val;
         };
+        const exist = _ => location.search.match(pattern) !== null;
         Object.defineProperty(output, 'value', { get: value });
+        Object.defineProperty(output, 'exist', { get: exist });
         outputs[param.key] = output;
       });
       return outputs;
