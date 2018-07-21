@@ -206,7 +206,7 @@ angular.module('player', ['ngSanitize', 'util'])
     { key: 'games', pattern: /games=(\d+)/, match: 1, format: Number },
   ]);
   $scope.options = {};
-  $scope.options.server = $scope.params.server.value || config.serve;
+  $scope.options.server = $scope.params.server.value || config.server;
   $scope.options.player = $scope.params.player.value || config.player;
   $scope.options.rejoin = $scope.params.rejoin.exist ? $scope.params.rejoin.value : config.rejoin;
   $scope.options.games = $scope.params.games.value || config.games;
