@@ -306,6 +306,8 @@ class GameTable {
     this.stage = '-';
     this.cards = [0, 0, 0, 0, 0];
     this.bet = 0;
+    this.sb = null;
+    this.bb = null;
     this.ready = false;
   }
 
