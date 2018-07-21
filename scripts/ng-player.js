@@ -1,6 +1,13 @@
 
 angular.module('player', ['ngSanitize', 'util'])
 
+.value('config', {
+  server: 'ws://poker-training.vtr.trendnet.org:3001',
+  player: null,
+  rejoin: true,
+  games: 5
+})
+
 .factory('bot', () => new PokerBaseBot())
 .factory('game', (bot) => new PokerGame({ bot }))
 .factory('model', () => new PokerActionModel())
@@ -191,13 +198,18 @@ angular.module('player', ['ngSanitize', 'util'])
   }
 })
 
-.controller('ConnectServerCtrl', ($scope, logger, url, game) => {
+.controller('ConnectServerCtrl', ($scope, logger, url, config, game) => {
+  $scope.params = url.parser.patterns([
+    { key: 'server', pattern: /server=([\w\-.:_/]+)/, match: 1 },
+    { key: 'player', pattern: /name=([\w_]+)/, match: 1 },
+    { key: 'rejoin', pattern: /rejoin=(yes|no)/, match: 1, format: v => v === 'yes' },
+    { key: 'games', pattern: /games=(\d+)/, match: 1, format: Number },
+  ]);
   $scope.options = {};
-  $scope.options.server = url.parser.search(/server=([\w\-.:_/]+)/, 1) || 'ws://poker-training.vtr.trendnet.org:3001';
-  $scope.options.player = url.parser.search(/name=([\w_]+)/, 1) || null;
-  $scope.options.bet = 50;
-  $scope.options.rejoin = true;
-  $scope.options.games = url.parser.search(/games=(\d+)/, 1) || 5;
+  $scope.options.server = $scope.params.server.value || config.serve;
+  $scope.options.player = $scope.params.player.value || config.player;
+  $scope.options.rejoin = $scope.params.rejoin.exist ? $scope.params.rejoin.value : config.rejoin;
+  $scope.options.games = $scope.params.games.value || config.games;
   $scope.connecting = false;
   $scope.connected = false;
 
