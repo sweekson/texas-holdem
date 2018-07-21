@@ -124,6 +124,22 @@
       if (!matches) { return null; }
       return index !== undefined ? matches[index] : matches;
     };
+
+    this.parser.patterns = params => {
+      const outputs = {};
+      params.forEach(param => {
+        const pattern = param.pattern;
+        const format = param.format;
+        const output = { pattern, format };
+        const value = _ => {
+          const val = this.parser.search(pattern, param.match);
+          return format ? format(val) : val;
+        };
+        Object.defineProperty(output, 'value', { get: value });
+        outputs[param.key] = output;
+      });
+      return outputs;
+    };
   }
 
   /* service */
