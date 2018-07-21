@@ -119,10 +119,10 @@
   function UrlService () {
     this.parser = {};
 
-    this.parser.search = (regexp, index) => {
+    this.parser.search = (regexp, index = 0) => {
       const matches = location.search.match(regexp);
       if (!matches) { return null; }
-      return index !== undefined ? matches[index] : matches;
+      return matches[index];
     };
 
     this.parser.patterns = params => {
