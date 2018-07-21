@@ -257,6 +257,10 @@ class Players {
     this.winners = [];
   }
 
+  /**
+   * To assign player list while joined a game table or started a new round
+   * @param {Array} list
+   */
   assign(list) {
     this.list = list.map(AnonymousPlayer.create);
     this.list.forEach(player => {
@@ -266,12 +270,20 @@ class Players {
     });
   }
 
+  /**
+   * To refresh player list while during a round
+   * @param {Array} list
+   */
   refresh(list) {
     const table = new Map();
     list.forEach(data => table.set(data.playerName, data));
     this.list.forEach(player => player.assign(table.get(player.name)));
   }
 
+  /**
+   * To resolve player list while ended a round
+   * @param {Array} list
+   */
   resolve(list) {
     const table = new Map();
     list.forEach(data => table.set(data.playerName, data));
