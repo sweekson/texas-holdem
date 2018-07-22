@@ -144,19 +144,16 @@ angular.module('player', ['ngSanitize', 'util'])
       type: 'round-end',
       messages: ['(ROUND END)'],
     });
-    game.players.list.forEach(({ name, chips, hand }) => {
+    game.players.list.forEach(({ name, chips, reward, hand }) => {
+      const change = reward.change > 0 ? `+${reward.change}` : reward.change;
+      const messages = ['(HAND)', `Player: ${name}`, `Chips: ${chips} (${change})`];
+      const log = { type: 'round-end', messages };
       if (!hand) {
-        return logger.info({
-          type: 'round-end',
-          messages: ['(HAND)', `Player: ${name}`, `Chips: ${chips}`],
-        });
+        return logger.info(log);
       }
       const cards = hand.cards.join(', ');
-      const message = hand.message;
-      logger.info({
-        type: 'round-end',
-        messages: ['(HAND)', `Player: ${name}`, `Chips: ${chips}`, `Cards: ${cards}`, `(${message})`],
-      });
+      messages.push(`Cards: ${cards}`, `(${hand.message})`);
+      logger.info(log);
     });
     $scope.$apply();
   });
