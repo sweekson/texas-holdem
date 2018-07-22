@@ -169,6 +169,7 @@
 							<tr>
 								<th style="width: 20px">#</th>
 								<th class="text-ellipsis">Display Name</th>
+								<th class="text-center" style="width: 70px">Wins</th>
 								<th class="text-right" style="width: 70px">Chips</th>
 								<th class="text-right" style="width: 70px">Folded</th>
 								<th class="text-center" style="width: 70px">All-in</th>
@@ -181,6 +182,7 @@
 							<tr ng-repeat="player in players" ng-class="{ info: player.self, warning: !player.survive }">
 								<td ng-bind="$index + 1"></td>
 								<td class="text-ellipsis" ng-bind="player.name"></td>
+								<td class="text-center" ng-bind="player.wins"></td>
 								<td class="text-right" ng-bind="player.chips"></td>
 								<td class="text-center" ng-bind="player.folded"></td>
 								<td class="text-center" ng-bind="player.allin"></td>
