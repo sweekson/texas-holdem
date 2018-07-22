@@ -49,11 +49,42 @@ angular.module('player', ['ngSanitize', 'util'])
   this.action = index => actions[index];
 })
 
-.service('collector', function () {
+.service('records', function (converter) {
   const games = new Map();
-  const history = [];
 
-  this.game = table => games.set(table.number, table);
+  this.list = [
+    {
+      table: { number: 1, rounds: 16 },
+      players: { list: [{}, {}, {}, {}, {}, {}, {}] },
+      player: { survive: true, chips: 3210 },
+      actions: [
+        {
+          player: { name: 'aaa', cards: ['AH', 'KC'].map(converter.card) },
+          table: { rounds: 1, stage: 'Deal', cards: [0, 0, 0, 0, 0], bet: 50 },
+          action: { type: 'call', amount: '20', bet: 20 }
+        },
+        {
+          player: { name: 'bbb', cards: ['TS', 'JD'].map(converter.card) },
+          table: { rounds: 1, stage: 'Deal', cards: [0, 0, 0, 0, 0], bet: 50 },
+          action: { type: 'fold', bet: 0 }
+        },
+        {
+          player: { name: 'aaa', cards: ['AH', 'KC'].map(converter.card) },
+          table: { rounds: 1, stage: 'Flop', cards: ['5D', '6H', '7S'].map(converter.card).concat([0, 0]), bet: 130 },
+          action: { type: 'bet', amount: 80, bet: 80 }
+        },
+      ],
+      time: new Date(2018, 7, 22, 20, 15)
+    },
+    {
+      table: { number: 2, rounds: 12 },
+      players: { list: [{}, {}, {}, {}, {}, {}] },
+      player: { survive: false, chips: 0 },
+      time: new Date(2018, 7, 22, 21, 34)
+    }
+  ];
+
+  this.game = data => games.set(data.table.number, data);
 
   this.action = (table, data) => {
     const game = games.get(table);
@@ -63,17 +94,16 @@ angular.module('player', ['ngSanitize', 'util'])
   this.over = (table, data) => {
     const game = games.get(table);
     game.winners = data.winners;
-    history.push(game);
+    this.list.push(game);
     games.delete(table);
   };
-
-  this.history = _ => history.slice(0);
 })
 
-.controller('RootCtrl', ($scope, $window, logger, bools, game) => {
+.controller('RootCtrl', ($scope, $window, logger, bools, game, records) => {
   $scope.logger = logger;
-  $scope.tabs = bools.create('tabs', {  connect: true, watch: false }, { single: true });
+  $scope.tabs = bools.create('tabs', {  connect: !0, watch: !1, records: !1 }, { single: true });
   $scope.game = game;
+  $scope.records = records;
   $window.game = game;
 
   game.rx.observable.events$.subscribe(console.log);
@@ -290,6 +320,11 @@ angular.module('player', ['ngSanitize', 'util'])
 
   game.rx.observable.players.action$.subscribe(_ => $scope.$apply());
   game.rx.observable.round.end$.subscribe(_ => $scope.$apply());
+})
+
+.controller('RecordsCtrl', ($scope, game, records) => {
+  $scope.selected = null;
+  $scope.select = game => $scope.selected = game;
 })
 
 .controller('LogsToolbarCtrl', ($scope, bools, dropdowns, logger) => {
