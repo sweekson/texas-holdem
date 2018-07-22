@@ -212,6 +212,7 @@ class AnonymousPlayer {
   constructor(data) {
     this.assign(data);
     this.reward = new PlayerChipsReward(this.chips);
+    this.wins = 0;
   }
 
   assign(data) {
@@ -290,6 +291,7 @@ class Players {
     this.list.forEach(player => {
       player.reward.resolve(player.chips);
       player.reward.changes > 0 && this.wins.set(player.name, this.wins.get(player.name) + 1);
+      player.wins = this.wins.get(player.name);
     });
   }
 
