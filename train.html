@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="train">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="styles/styles.css">
   <title>Train Model & Test</title>
 </head>
+
 <body ng-controller="RootCtrl">
   <div class="main-column-left">
     <form class="form-vertical" ng-controller="TrainModelCtrl">
@@ -15,15 +17,17 @@
         <div class="col-sm-6">
           <div class="form-group">
             <label for="learning-rate">Learning Rate</label>
-            <input id="learning-rate" type="text" class="form-control" ng-model="options.learningRate" ng-change="update('learningRate', options.learningRate)" ng-disabled="fitting">
+            <input id="learning-rate" type="text" class="form-control" ng-model="options.learningRate" ng-change="update('learningRate', options.learningRate)"
+              ng-disabled="fitting">
           </div>
         </div>
 
         <div class="col-sm-6">
           <div class="form-group">
-              <label for="epochs">Epochs</label>
-              <input id="epochs" type="text" class="form-control" ng-model="options.epochs" ng-change="update('epochs', options.epochs)" ng-disabled="fitting">
-            </div>
+            <label for="epochs">Epochs</label>
+            <input id="epochs" type="text" class="form-control" ng-model="options.epochs" ng-change="update('epochs', options.epochs)"
+              ng-disabled="fitting">
+          </div>
         </div>
       </div>
 
@@ -31,7 +35,8 @@
         <div class="col-sm-6">
           <div class="form-group">
             <label for="batch-size">Batch Size</label>
-            <input id="batch-size" type="text" class="form-control" ng-model="options.batchSize" ng-change="update('batchSize', options.batchSize)" ng-disabled="fitting">
+            <input id="batch-size" type="text" class="form-control" ng-model="options.batchSize" ng-change="update('batchSize', options.batchSize)"
+              ng-disabled="fitting">
           </div>
         </div>
       </div>
@@ -45,7 +50,7 @@
             </label>
             <span class="file-name">
               <span ng-bind="inputs.name"></span>
-              <span ng-if="inputs.loaded">(loaded)</span>
+            <span ng-if="inputs.loaded">(loaded)</span>
             </span>
           </div>
         </div>
@@ -58,7 +63,7 @@
             </label>
             <span class="file-name">
               <span ng-bind="outputs.name"></span>
-              <span ng-if="outputs.loaded">(loaded)</span>
+            <span ng-if="outputs.loaded">(loaded)</span>
             </span>
           </div>
         </div>
@@ -116,7 +121,7 @@
         </label>
         <span class="file-name">
           <span ng-bind="inputs.name"></span>
-          <span ng-if="inputs.loaded">(loaded)</span>
+        <span ng-if="inputs.loaded">(loaded)</span>
         </span>
       </div>
 
@@ -147,4 +152,5 @@
   <script src="scripts/ng-util.js"></script>
   <script src="scripts/ng-train.js"></script>
 </body>
+
 </html>

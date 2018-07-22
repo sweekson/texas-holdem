@@ -1,403 +1,406 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="player">
+
 <head>
-	<meta charset="UTF-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
   <link rel="stylesheet" href="styles/font-awesome.min.css">
   <link rel="stylesheet" href="styles/styles.css">
-	<title>Play Game</title>
+  <title>Play Game</title>
 </head>
+
 <body ng-controller="RootCtrl">
-	<div class="main-column-left">
-		<ul class="nav nav-tabs">
-		  <li role="presentation" ng-class="{ active: tabs.active('connect') }">
-		  	<a href="#" ng-click="tabs.toggle('connect')">Configure & Connect</a>
-		  </li>
-		  <li role="presentation" ng-class="{ active: tabs.active('watch'), hide: !game.table.ready }">
-		  	<a href="#" ng-click="tabs.toggle('watch')">Watch Game</a>
-		  </li>
-		  <li role="presentation" ng-class="{ active: tabs.active('records'), hide: !records.list.length }">
-		  	<a href="#" ng-click="tabs.toggle('records')">Game Records</a>
-		  </li>
-		</ul>
+  <div class="main-column-left">
+    <ul class="nav nav-tabs">
+      <li role="presentation" ng-class="{ active: tabs.active('connect') }">
+        <a href="#" ng-click="tabs.toggle('connect')">Configure & Connect</a>
+      </li>
+      <li role="presentation" ng-class="{ active: tabs.active('watch'), hide: !game.table.ready }">
+        <a href="#" ng-click="tabs.toggle('watch')">Watch Game</a>
+      </li>
+      <li role="presentation" ng-class="{ active: tabs.active('records'), hide: !records.list.length }">
+        <a href="#" ng-click="tabs.toggle('records')">Game Records</a>
+      </li>
+    </ul>
 
-		<div class="tab-content">
-	    <div role="tabpanel" class="tab-pane" ng-class="{ active: tabs.active('connect') }">
-				<h4>Connect to Game Server</h4>
-				<form ng-controller="ConnectServerCtrl">
-					<div class="row">
-						<div class="col-sm-8">
-							<div class="form-group">
-								<label for="server">Server URL</label>
-								<input id="server" type="text" class="form-control" ng-model="options.server">
-							</div>
-						</div>
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane" ng-class="{ active: tabs.active('connect') }">
+        <h4>Connect to Game Server</h4>
+        <form ng-controller="ConnectServerCtrl">
+          <div class="row">
+            <div class="col-sm-8">
+              <div class="form-group">
+                <label for="server">Server URL</label>
+                <input id="server" type="text" class="form-control" ng-model="options.server">
+              </div>
+            </div>
 
-						<div class="col-sm-4">
-							<div class="form-group">
-								<label for="player">Player Name</label>
-								<input id="player" type="text" class="form-control" ng-model="options.player">
-							</div>
-						</div>
-					</div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="player">Player Name</label>
+                <input id="player" type="text" class="form-control" ng-model="options.player">
+              </div>
+            </div>
+          </div>
 
-					<div class="row">
-						<div class="col-sm-3">
-							<div class="form-group">
-								<label>Auto Rejoin</label>
-								<input id="rejoin" type="checkbox" class="hide" ng-click="rejoin()" ng-checked="options.rejoin">
-								<div class="btn-group clearfix" role="group" style="display: block;">
-									<label for="rejoin" class="btn btn-default" ng-class="{ active: options.rejoin }">
+          <div class="row">
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>Auto Rejoin</label>
+                <input id="rejoin" type="checkbox" class="hide" ng-click="rejoin()" ng-checked="options.rejoin">
+                <div class="btn-group clearfix" role="group" style="display: block;">
+                  <label for="rejoin" class="btn btn-default" ng-class="{ active: options.rejoin }">
 										YES
 									</label>
-									<label for="rejoin" class="btn btn-default" ng-class="{ active: !options.rejoin }">
+                  <label for="rejoin" class="btn btn-default" ng-class="{ active: !options.rejoin }">
 										NO
 									</label>
-								</div>
-							</div>
-						</div>
+                </div>
+              </div>
+            </div>
 
-						<div class="col-sm-3">
-							<div class="form-group">
-								<label for="games">Max Games</label>
-								<input id="games" type="text" class="form-control" ng-model="options.games">
-							</div>
-						</div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label for="games">Max Games</label>
+                <input id="games" type="text" class="form-control" ng-model="options.games">
+              </div>
+            </div>
 
-						<div class="col-sm-2">
-							<div class="form-group" style="margin-top: 25px">
-								<button class="btn btn-primary" type="button" ng-click="connect()" ng-disabled="connecting" ng-if="!connected">Connect</button>
-								<button class="btn btn-default" type="button" ng-click="disconnect()" ng-if="connected">Disconnect</button>
-							</div>
-						</div>
-					</div>
-				</form>
+            <div class="col-sm-2">
+              <div class="form-group" style="margin-top: 25px">
+                <button class="btn btn-primary" type="button" ng-click="connect()" ng-disabled="connecting" ng-if="!connected">Connect</button>
+                <button class="btn btn-default" type="button" ng-click="disconnect()" ng-if="connected">Disconnect</button>
+              </div>
+            </div>
+          </div>
+        </form>
 
-				<hr>
+        <hr>
 
-				<h4>Load Model</h4>
-				<form class="form-vertical" ng-controller="LoadModelCtrl">
-					<div class="row">
-						<div class="col-xs-6 col-sm-4">
-							<div class="form-group">
-								<label for="json-upload" class="btn btn-default">
+        <h4>Load Model</h4>
+        <form class="form-vertical" ng-controller="LoadModelCtrl">
+          <div class="row">
+            <div class="col-xs-6 col-sm-4">
+              <div class="form-group">
+                <label for="json-upload" class="btn btn-default">
 									<input id="json-upload" type="file" class="hide" ng-model="json" ng-file-model>
 									<span>Browse JSON</span>
 								</label>
-								<span class="file-name">
+                <span class="file-name">
 									<span ng-bind="json.name"></span>
-								</span>
-							</div>
-						</div>
+                </span>
+              </div>
+            </div>
 
-						<div class="col-xs-6 col-sm-4">
-							<div class="form-group">
-								<label for="weights-upload" class="btn btn-default">
+            <div class="col-xs-6 col-sm-4">
+              <div class="form-group">
+                <label for="weights-upload" class="btn btn-default">
 									<input id="weights-upload" type="file" class="hide" ng-model="weights" ng-file-model>
 									<span>Browse Weights</span>
 								</label>
-								<span class="file-name">
+                <span class="file-name">
 									<span ng-bind="weights.name"></span>
-								</span>
-							</div>
-						</div>
+                </span>
+              </div>
+            </div>
 
-						<div class="col-xs-12 col-sm-2">
-							<div class="form-group">
-								<button class="btn btn-primary" type="button" ng-click="load()" ng-disabled="loading">Load Model</button>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
+            <div class="col-xs-12 col-sm-2">
+              <div class="form-group">
+                <button class="btn btn-primary" type="button" ng-click="load()" ng-disabled="loading">Load Model</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
 
-	    <div role="tabpanel" class="tab-pane" ng-class="{ active: tabs.active('watch') }">
-				<div>
-					<h4>Game Status</h4>
-					<div class="row" ng-controller="GameInfoCtrl">
-						<div class="col-xs-12 col-sm-4">
-							<label>Table Number:</label> <span ng-bind="table.number"></span>
-						</div>
+      <div role="tabpanel" class="tab-pane" ng-class="{ active: tabs.active('watch') }">
+        <div>
+          <h4>Game Status</h4>
+          <div class="row" ng-controller="GameInfoCtrl">
+            <div class="col-xs-12 col-sm-4">
+              <label>Table Number:</label> <span ng-bind="table.number"></span>
+            </div>
 
-						<div class="col-xs-12 col-sm-8" ng-if="game.table.ready">
-							<label>Player Name:</label> <span ng-bind="game.player.name"></span>
-						</div>
+            <div class="col-xs-12 col-sm-8" ng-if="game.table.ready">
+              <label>Player Name:</label> <span ng-bind="game.player.name"></span>
+            </div>
 
-						<div class="col-xs-12 col-sm-4" ng-if="game.table.ready">
-							<label>Rounds:</label> <span ng-bind="table.rounds"></span>
-						</div>
+            <div class="col-xs-12 col-sm-4" ng-if="game.table.ready">
+              <label>Rounds:</label> <span ng-bind="table.rounds"></span>
+            </div>
 
-						<div class="col-xs-12 col-sm-4" ng-if="game.table.ready">
-							<label>Stage:</label> <span ng-bind="table.stage"></span>
-						</div>
+            <div class="col-xs-12 col-sm-4" ng-if="game.table.ready">
+              <label>Stage:</label> <span ng-bind="table.stage"></span>
+            </div>
 
-						<div class="col-xs-12 col-sm-4" ng-if="game.table.ready">
-							<label>Total Bet:</label> <span ng-bind="table.bet"></span>
-						</div>
-					</div>
+            <div class="col-xs-12 col-sm-4" ng-if="game.table.ready">
+              <label>Total Bet:</label> <span ng-bind="table.bet"></span>
+            </div>
+          </div>
 
-					<hr>
+          <hr>
 
-					<h4>Cards</h4>
-					<div class="row">
-						<div class="col-sm-3">
-							<h5>Hole</h5>
-						</div>
-						<div class="col-sm-7">
-							<h5>Board</h5>
-						</div>
-					</div>
-					<div id="cards" class="row" ng-controller="CardsCtrl">
-						<div class="col-xs-1" ng-repeat="card in hole">
-							<div class="poker-card" ng-class="card.symbol">
-								<span class="poker-card-number" ng-bind="card.number"></span>
-								<span class="poker-card-symbol" ng-bind-html="card.entity"></span>
-							</div>
-						</div>
-						<div class="col-xs-1"></div>
-						<div class="col-xs-1" ng-repeat="card in board">
-							<div class="poker-card" ng-class="card.symbol">
-								<span class="poker-card-number" ng-bind="card.number"></span>
-								<span class="poker-card-symbol" ng-bind-html="card.entity"></span>
-							</div>
-						</div>
-					</div>
+          <h4>Cards</h4>
+          <div class="row">
+            <div class="col-sm-3">
+              <h5>Hole</h5>
+            </div>
+            <div class="col-sm-7">
+              <h5>Board</h5>
+            </div>
+          </div>
+          <div id="cards" class="row" ng-controller="CardsCtrl">
+            <div class="col-xs-1" ng-repeat="card in hole">
+              <div class="poker-card" ng-class="card.symbol">
+                <span class="poker-card-number" ng-bind="card.number"></span>
+                <span class="poker-card-symbol" ng-bind-html="card.entity"></span>
+              </div>
+            </div>
+            <div class="col-xs-1"></div>
+            <div class="col-xs-1" ng-repeat="card in board">
+              <div class="poker-card" ng-class="card.symbol">
+                <span class="poker-card-number" ng-bind="card.number"></span>
+                <span class="poker-card-symbol" ng-bind-html="card.entity"></span>
+              </div>
+            </div>
+          </div>
 
-					<hr>
+          <hr>
 
-					<h4>Players</h4>
-					<table class="table table-hover table-striped table-layout-fixed" ng-controller="PlayersCtrl">
-						<thead>
-							<tr>
-								<th style="width: 20px">#</th>
-								<th class="text-ellipsis">Display Name</th>
-								<th class="text-center" style="width: 70px">Wins</th>
-								<th class="text-right" style="width: 70px">Chips</th>
-								<th class="text-right" style="width: 70px">Folded</th>
-								<th class="text-center" style="width: 70px">All-in</th>
-								<th class="text-center" style="width: 70px">Survive</th>
-								<th class="text-center" style="width: 70px">Online</th>
-								<th class="text-center" style="width: 70px">Human</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="player in players" ng-class="{ info: player.self, warning: !player.survive }">
-								<td ng-bind="$index + 1"></td>
-								<td class="text-ellipsis" ng-bind="player.name"></td>
-								<td class="text-center" ng-bind="player.wins"></td>
-								<td class="text-right" ng-bind="player.chips"></td>
-								<td class="text-center" ng-bind="player.folded"></td>
-								<td class="text-center" ng-bind="player.allin"></td>
-								<td class="text-center" ng-bind="player.survive"></td>
-								<td class="text-center" ng-bind="player.online"></td>
-								<td class="text-center" ng-bind="player.human"></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
+          <h4>Players</h4>
+          <table class="table table-hover table-striped table-layout-fixed" ng-controller="PlayersCtrl">
+            <thead>
+              <tr>
+                <th style="width: 20px">#</th>
+                <th class="text-ellipsis">Display Name</th>
+                <th class="text-center" style="width: 70px">Wins</th>
+                <th class="text-right" style="width: 70px">Chips</th>
+                <th class="text-right" style="width: 70px">Folded</th>
+                <th class="text-center" style="width: 70px">All-in</th>
+                <th class="text-center" style="width: 70px">Survive</th>
+                <th class="text-center" style="width: 70px">Online</th>
+                <th class="text-center" style="width: 70px">Human</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="player in players" ng-class="{ info: player.self, warning: !player.survive }">
+                <td ng-bind="$index + 1"></td>
+                <td class="text-ellipsis" ng-bind="player.name"></td>
+                <td class="text-center" ng-bind="player.wins"></td>
+                <td class="text-right" ng-bind="player.chips"></td>
+                <td class="text-center" ng-bind="player.folded"></td>
+                <td class="text-center" ng-bind="player.allin"></td>
+                <td class="text-center" ng-bind="player.survive"></td>
+                <td class="text-center" ng-bind="player.online"></td>
+                <td class="text-center" ng-bind="player.human"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-			<div role="tabpanel" class="tab-pane" ng-class="{ active: tabs.active('records') }" ng-controller="RecordsCtrl">
-				<h4>Games</h4>
-				<table class="table table-hover table-striped table-layout-fixed margin-bottom-0">
-					<thead>
-						<tr>
-							<th class="text-center" style="width: 70px;">Table</th>
-							<th class="text-center" style="width: 70px;">Players</th>
-							<th class="text-center" style="width: 70px;">Rounds</th>
-							<th class="text-center" style="width: 70px;">Survive</th>
-							<th class="text-right" style="width: 70px;">Chips</th>
-							<th class="text-center" style="width: 100px;">Time</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-				</table>
+      <div role="tabpanel" class="tab-pane" ng-class="{ active: tabs.active('records') }" ng-controller="RecordsCtrl">
+        <h4>Games</h4>
+        <table class="table table-hover table-striped table-layout-fixed margin-bottom-0">
+          <thead>
+            <tr>
+              <th class="text-center" style="width: 70px;">Table</th>
+              <th class="text-center" style="width: 70px;">Players</th>
+              <th class="text-center" style="width: 70px;">Rounds</th>
+              <th class="text-center" style="width: 70px;">Survive</th>
+              <th class="text-right" style="width: 70px;">Chips</th>
+              <th class="text-center" style="width: 100px;">Time</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+        </table>
 
-				<div class="overflow-auto" style="max-height: 195px">
-					<table class="table table-hover table-striped table-layout-fixed margin-bottom-0">
-						<tbody>
-							<tr ng-repeat="record in records.list" ng-class="{ info: selected === record }">
-								<td class="text-center" style="width: 70px;" ng-bind="record.table.number"></td>
-								<td class="text-center" style="width: 70px;" ng-bind="record.players.list.length"></td>
-								<td class="text-center" style="width: 70px;" ng-bind="record.table.rounds"></td>
-								<td class="text-center" style="width: 70px;" ng-bind="record.player.survive ? 'YES' : 'NO'"></td>
-								<td class="text-right" style="width: 70px;" ng-bind="record.player.chips"></td>
-								<td class="text-center" style="width: 100px;" ng-bind="record.time | date:'HH:mm'"></td>
-								<td>
-									<button class="btn btn-xs btn-link" type="button" ng-click="select(record)">
+        <div class="overflow-auto" style="max-height: 195px">
+          <table class="table table-hover table-striped table-layout-fixed margin-bottom-0">
+            <tbody>
+              <tr ng-repeat="record in records.list" ng-class="{ info: selected === record }">
+                <td class="text-center" style="width: 70px;" ng-bind="record.table.number"></td>
+                <td class="text-center" style="width: 70px;" ng-bind="record.players.list.length"></td>
+                <td class="text-center" style="width: 70px;" ng-bind="record.table.rounds"></td>
+                <td class="text-center" style="width: 70px;" ng-bind="record.player.survive ? 'YES' : 'NO'"></td>
+                <td class="text-right" style="width: 70px;" ng-bind="record.player.chips"></td>
+                <td class="text-center" style="width: 100px;" ng-bind="record.time | date:'HH:mm'"></td>
+                <td>
+                  <button class="btn btn-xs btn-link" type="button" ng-click="select(record)">
 										Details
 									</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-				<div ng-if="selected">
-					<hr>
-					<h4>Details</h4>
+        <div ng-if="selected">
+          <hr>
+          <h4>Details</h4>
 
-					<div class="row">
-						<div class="col-xs-4">
-							<label>Table Number:</label> <span ng-bind="selected.table.number"></span>
-						</div>
+          <div class="row">
+            <div class="col-xs-4">
+              <label>Table Number:</label> <span ng-bind="selected.table.number"></span>
+            </div>
 
-						<div class="col-xs-4">
-							<label>Players:</label> <span ng-bind="selected.players.list.length"></span>
-						</div>
+            <div class="col-xs-4">
+              <label>Players:</label> <span ng-bind="selected.players.list.length"></span>
+            </div>
 
-						<div class="col-xs-4">
-							<label>Rounds:</label> <span ng-bind="selected.table.rounds"></span>
-						</div>
-					</div>
+            <div class="col-xs-4">
+              <label>Rounds:</label> <span ng-bind="selected.table.rounds"></span>
+            </div>
+          </div>
 
-					<h5>Player Actions</h5>
-					<table class="table table-hover table-striped table-layout-fixed">
-						<thead>
-							<tr>
-								<th>Player</th>
-								<th class="text-center" style="width: 60px">Round</th>
-								<th class="text-center" style="width: 60px">Stage</th>
-								<th style="width: 75px">Hole</th>
-								<th style="width: 155px">Board</th>
-								<th class="text-center" style="width: 65px">Action</th>
-								<th class="text-right" style="width: 65px">Amount</th>
-								<th class="text-right" style="width: 60px">Bet</th>
-								<th class="text-right" style="width: 60px">Pot</th>
-							</tr>
-						</thead>
+          <h5>Player Actions</h5>
+          <table class="table table-hover table-striped table-layout-fixed">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th class="text-center" style="width: 60px">Round</th>
+                <th class="text-center" style="width: 60px">Stage</th>
+                <th style="width: 75px">Hole</th>
+                <th style="width: 155px">Board</th>
+                <th class="text-center" style="width: 65px">Action</th>
+                <th class="text-right" style="width: 65px">Amount</th>
+                <th class="text-right" style="width: 60px">Bet</th>
+                <th class="text-right" style="width: 60px">Pot</th>
+              </tr>
+            </thead>
 
-						<tbody>
-							<tr ng-repeat="action in selected.actions">
-								<td class="text-ellipsis" ng-bind="action.player.name"></td>
-								<td class="text-center" ng-bind="action.table.rounds"></td>
-								<td class="text-center" ng-bind="action.table.stage"></td>
-								<td class="poker-card-xs-cell">
-									<span class="poker-card poker-card-xs" ng-class="card.symbol" ng-repeat="card in action.player.cards">
+            <tbody>
+              <tr ng-repeat="action in selected.actions">
+                <td class="text-ellipsis" ng-bind="action.player.name"></td>
+                <td class="text-center" ng-bind="action.table.rounds"></td>
+                <td class="text-center" ng-bind="action.table.stage"></td>
+                <td class="poker-card-xs-cell">
+                  <span class="poker-card poker-card-xs" ng-class="card.symbol" ng-repeat="card in action.player.cards">
 										<span class="poker-card-number" ng-bind="card.number"></span>
-										<span class="poker-card-symbol" ng-bind-html="card.entity"></span>
-									</span>
-								</td>
-								<td class="poker-card-xs-cell">
-									<span class="poker-card poker-card-xs" ng-class="card.symbol" ng-repeat="card in action.table.cards track by $index">
+                  <span class="poker-card-symbol" ng-bind-html="card.entity"></span>
+                  </span>
+                </td>
+                <td class="poker-card-xs-cell">
+                  <span class="poker-card poker-card-xs" ng-class="card.symbol" ng-repeat="card in action.table.cards track by $index">
 										<span class="poker-card-number" ng-bind="card.number"></span>
-										<span class="poker-card-symbol" ng-bind-html="card.entity"></span>
-									</span>
-								</td>
-								<td class="text-center" ng-bind="action.action.type"></td>
-								<td class="text-right" ng-bind="action.action.amount || 0"></td>
-								<td class="text-right" ng-bind="action.player.bet + action.action.bet"></td>
-								<td class="text-right" ng-bind="action.table.bet"></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+                  <span class="poker-card-symbol" ng-bind-html="card.entity"></span>
+                  </span>
+                </td>
+                <td class="text-center" ng-bind="action.action.type"></td>
+                <td class="text-right" ng-bind="action.action.amount || 0"></td>
+                <td class="text-right" ng-bind="action.player.bet + action.action.bet"></td>
+                <td class="text-right" ng-bind="action.table.bet"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 
-	<div class="main-column-right outputs-filters" ng-controller="LogsToolbarCtrl">
-		<div class="dropdown" ng-class="{ open: dropdowns.active('events') }" click-on-others="dropdowns.close('events')">
-			<button type="button" class="btn btn-default" ng-click="dropdowns.open('events')">
+  <div class="main-column-right outputs-filters" ng-controller="LogsToolbarCtrl">
+    <div class="dropdown" ng-class="{ open: dropdowns.active('events') }" click-on-others="dropdowns.close('events')">
+      <button type="button" class="btn btn-default" ng-click="dropdowns.open('events')">
 				Events <span class="caret"></span>
 			</button>
 
-			<ul class="dropdown-menu dropdown-menu-selection">
-				<li>
-					<a href="#" class="form-check">
+      <ul class="dropdown-menu dropdown-menu-selection">
+        <li>
+          <a href="#" class="form-check">
 						<input id="system" type="checkbox" ng-checked="filters.active('system')" ng-click="filters.toggle('system')">
 						<label for="system">System</label>
 					</a>
-				</li>
+        </li>
 
-				<li>
-					<a href="#" class="form-check">
+        <li>
+          <a href="#" class="form-check">
 						<input id="join-table" type="checkbox" ng-checked="filters.active('join-table')" ng-click="filters.toggle('join-table')">
 						<label for="join-table">Join Table</label>
 					</a>
-				</li>
+        </li>
 
-				<li>
-					<a href="#" class="form-check">
+        <li>
+          <a href="#" class="form-check">
 						<input id="game-start" type="checkbox" ng-checked="filters.active('game-start')" ng-click="filters.toggle('game-start')">
 						<label for="game-start">Game Start</label>
 					</a>
-				</li>
+        </li>
 
-				<li>
-					<a href="#" class="form-check">
+        <li>
+          <a href="#" class="form-check">
 						<input id="game-over" type="checkbox" ng-checked="filters.active('game-over')" ng-click="filters.toggle('game-over')">
 						<label for="game-over">Game Over</label>
 					</a>
-				</li>
+        </li>
 
-				<li>
-					<a href="#" class="form-check">
+        <li>
+          <a href="#" class="form-check">
 						<input id="round-start" type="checkbox" ng-checked="filters.active('round-start')" ng-click="filters.toggle('round-start')">
 						<label for="round-start">New Round</label>
 					</a>
-				</li>
+        </li>
 
-				<li>
-					<a href="#" class="form-check">
+        <li>
+          <a href="#" class="form-check">
 						<input id="round-stage" type="checkbox" ng-checked="filters.active('round-stage')" ng-click="filters.toggle('round-stage')">
 						<label for="round-stage">Round Stage</label>
 					</a>
-				</li>
+        </li>
 
-				<li>
-					<a href="#" class="form-check">
+        <li>
+          <a href="#" class="form-check">
 						<input id="round-end" type="checkbox" ng-checked="filters.active('round-end')" ng-click="filters.toggle('round-end')">
 						<label for="round-end">Round End</label>
 					</a>
-				</li>
+        </li>
 
-				<li>
-					<a href="#" class="form-check">
+        <li>
+          <a href="#" class="form-check">
 						<input id="show-action" type="checkbox" ng-checked="filters.active('show-action')" ng-click="filters.toggle('show-action')">
 						<label for="show-action">Player Action</label>
 					</a>
-				</li>
-			</ul>
-		</div>
+        </li>
+      </ul>
+    </div>
 
-		<div class="btn-group" role="group">
-			<label class="btn btn-default" ng-class="{ active: filters.active('all') }">
+    <div class="btn-group" role="group">
+      <label class="btn btn-default" ng-class="{ active: filters.active('all') }">
 				<input type="radio" class="hide" ng-value="true" ng-checked="filters.active('all')" ng-click="filters.toggle('all', !0)">
 				All
 			</label>
 
-			<label class="btn btn-default" ng-class="{ active: !filters.active('all') }">
+      <label class="btn btn-default" ng-class="{ active: !filters.active('all') }">
 				<input type="radio" class="hide" ng-value="false" ng-checked="!filters.active('all')" ng-click="filters.toggle('all', !1)">
 				Only Mine
 			</label>
-		</div>
+    </div>
 
-		<button type="button" class="btn btn-default" ng-click="logger.clear()">Clear</button>
-		<button type="button" class="btn btn-default" scroll="bottom" scroll-target="#outputs">
+    <button type="button" class="btn btn-default" ng-click="logger.clear()">Clear</button>
+    <button type="button" class="btn btn-default" scroll="bottom" scroll-target="#outputs">
 			<span class="fa fa-angle-double-down"></span>
 		</button>
-	</div>
+  </div>
 
-	<div class="main-column-right outputs-wrapper" ng-controller="LogsCtrl">
-		<div id="outputs" class="outputs" auto-scroll bottom-bound="80">
-			<ul class="list-group">
-				<li class="list-group-item" ng-repeat="log in logs">
-					<span class="fragment" ng-repeat="message in log.messages">{{message}}</span>
-				</li>
-			</ul>
-		</div>
-	</div>
+  <div class="main-column-right outputs-wrapper" ng-controller="LogsCtrl">
+    <div id="outputs" class="outputs" auto-scroll bottom-bound="80">
+      <ul class="list-group">
+        <li class="list-group-item" ng-repeat="log in logs">
+          <span class="fragment" ng-repeat="message in log.messages">{{message}}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
 
   <script src="vendors/tensorflow.min.js"></script>
-	<script src="vendors/rxjs.umd.min.js"></script>
-	<script src="vendors/angular.min.js"></script>
-	<script src="vendors/angular-sanitize.min.js"></script>
-	<script src="vendors/md5.min.js"></script>
-	<script src="scripts/PokerGame.js"></script>
+  <script src="vendors/rxjs.umd.min.js"></script>
+  <script src="vendors/angular.min.js"></script>
+  <script src="vendors/angular-sanitize.min.js"></script>
+  <script src="vendors/md5.min.js"></script>
+  <script src="scripts/PokerGame.js"></script>
   <script src="scripts/PokerModel.js"></script>
   <script src="scripts/ng-util.js"></script>
-	<script src="scripts/ng-player.js"></script>
+  <script src="scripts/ng-player.js"></script>
 </body>
+
 </html>
