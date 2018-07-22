@@ -14,7 +14,7 @@
 		  <li role="presentation" ng-class="{ active: tabs.active('connect') }">
 		  	<a href="#" ng-click="tabs.toggle('connect')">Configure & Connect</a>
 		  </li>
-		  <li role="presentation" ng-class="{ active: tabs.active('watch') }">
+		  <li role="presentation" ng-class="{ active: tabs.active('watch'), hide: !game.table.ready }">
 		  	<a href="#" ng-click="tabs.toggle('watch')">Watch Game</a>
 		  </li>
 		</ul>
