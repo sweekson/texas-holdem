@@ -11,6 +11,14 @@
   table-layout: fixed;
 }
 
+.overflow-auto {
+  overflow: auto;
+}
+
+.margin-bottom-0 {
+  margin-bottom: 0;
+}
+
 /* Components */
 
 .form-check {
