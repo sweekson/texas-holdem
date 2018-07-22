@@ -242,7 +242,12 @@ fieldset[disabled] .form-check label {
   margin-left: 8px;
 }
 
+.table > tbody > tr > td.poker-card-xs-cell {
+  padding: 4px 8px;
+}
+
 .poker-card {
+  display: inline-block;
   border: 1px solid #bbb;
   border-radius: 4px;
   color: #555;
@@ -252,6 +257,23 @@ fieldset[disabled] .form-check label {
   width: 45px;
   padding: 6px;
   text-align: center;
+  vertical-align: middle;
+}
+
+.poker-card + .poker-card {
+  margin-left: 8px;
+}
+
+.poker-card-xs {
+  font-size: 16px;
+  line-height: 12px;
+  height: 32px;
+  width: 24px;
+  padding: 3px;
+}
+
+.poker-card-xs + .poker-card-xs {
+  margin-left: 4px;
 }
 
 .poker-card.hearts,
@@ -261,6 +283,10 @@ fieldset[disabled] .form-check label {
 
 .poker-card-number {
   font-size: 24px;
+}
+
+.poker-card-xs .poker-card-number {
+  font-size: 14px;
 }
 
 .poker-card-number,
