@@ -429,7 +429,7 @@ class PokerGame extends EventTarget {
 
     this.rx.observable.game = {
       start$: this.rx.observable.messages$.pipe(
-        filter(v => v.type === PokerGame.messages.game_start),
+        filter(v => v.type === PokerGame.messages.game_start && v.data.error_code === 0),
         map(v => v.data)
       ),
       over$: this.rx.observable.messages$.pipe(
