@@ -265,9 +265,10 @@ class Players {
   assign(list) {
     this.list = list.map(AnonymousPlayer.create);
     this.list.forEach(player => {
-      player.reward.refresh(player.chips + player.bet);
       this.map.set(player.name, player);
-      this.wins.set(player.name, 0);
+      this.wins.set(player.name, this.wins.get(player.name) || 0);
+      player.reward.refresh(player.chips + player.bet);
+      player.wins = this.wins.get(player.name);
     });
   }
 
