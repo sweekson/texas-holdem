@@ -243,7 +243,12 @@ fieldset[disabled] .form-check label {
 }
 
 .outputs > .list-group > .list-group-item:nth-child(even) {
-  background-color: #eee;
+  background-color: #f3f3f3;
+}
+
+.outputs > .list-group > .list-group-item.list-group-item-info {
+  color: #31708f;
+  background-color: #d9edf7;
 }
 
 .outputs .fragment + .fragment {
