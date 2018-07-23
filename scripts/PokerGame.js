@@ -315,8 +315,8 @@ class PlayerWinner {
 }
 
 class GameTable {
-  constructor() {
-    this.number = 0;
+  constructor(number) {
+    this.number = number || 0;
     this.rounds = -1;
     this.stage = '-';
     this.cards = [0, 0, 0, 0, 0];
@@ -484,7 +484,6 @@ class PokerGame extends EventTarget {
 
     observable.socket.connected$.subscribe(_ => setTimeout(_ => this.join(), 50));
     observable.socket.disconnected$.subscribe(_ => this.connected = false);
-    observable.game.start$.subscribe(data => this.table.number = data.tableNumber);
     observable.round.reload$.subscribe(_ => this.reload());
     observable.messages$.subscribe(data => this.refresh(data.type, data.data));
 
@@ -503,6 +502,12 @@ class PokerGame extends EventTarget {
     const { options, table, players, player } = this;
 
     switch (event) {
+      case PokerGame.messages.game_start:
+        this.table = new GameTable(data.tableNumber);
+        this.players = new Players();
+        this.player = new Player(this.options.player);
+        break;
+
       case PokerGame.messages.new_round:
       case PokerGame.messages.join:
         table.assign(data.table);
