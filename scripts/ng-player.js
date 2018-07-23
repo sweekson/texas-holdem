@@ -195,7 +195,7 @@ angular.module('player', ['ngSanitize', 'util'])
     const action = new PlayerAction(data.action);
     logger.info({
       type: 'show-action',
-      messages: ['(SHOW ACTION)', `Player: ${action.name}`, `Action: ${action.action}`, `Chips: ${action.chips}`],
+      messages: ['(SHOW ACTION)', `Player: ${action.name}`, `Action: ${action.type}`, `Chips: ${action.chips}`],
       self: action.name === game.player.name
     });
     $scope.$apply();

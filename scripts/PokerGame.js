@@ -33,16 +33,16 @@ class PokerBaseBot extends Bot {
       }
 
       var currentPlayer = this.actions[action.name];
-      currentPlayer.push(action.action);
+      currentPlayer.push(action.type);
 
       if (table.roundName === 'Flop' &&
-        (action.action === 'raise' || action.action === 'allin' || action.action === 'bet') &&
+        (action.type === 'raise' || action.type === 'allin' || action.type === 'bet') &&
         currentPlayer.toString().indexOf('raise') === -1) {
         this.status = PokerBaseBot.statuses.risk;
       }
 
       if (table.roundName === 'Turn' &&
-        (action.action === 'raise' || action.action === 'allin' || action.action === 'bet') &&
+        (action.type === 'raise' || action.type === 'allin' || action.type === 'bet') &&
         currentPlayer.toString().indexOf('raise') === -1) {
         this.status = PokerBaseBot.statuses.danger;
       }
@@ -365,7 +365,7 @@ BlindBet.format = data => {
 class PlayerAction {
   constructor(data) {
     this.name = data.playerName;
-    this.action = data.action;
+    this.type = data.action;
     this.chips = data.chips;
     this.self = data.self;
   }
