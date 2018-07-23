@@ -179,7 +179,8 @@ angular.module('player', ['ngSanitize', 'util'])
     game.players.list.forEach(({ name, chips, reward, hand }) => {
       const changes = reward.changes > 0 ? `+${reward.changes}` : reward.changes;
       const messages = ['(HAND)', `Player: ${name}`, `Chips: ${chips} (${changes})`];
-      const log = { type: 'round-end', messages };
+      const self = name === game.player.name;
+      const log = { type: 'round-end', messages, self };
       if (!hand) {
         return logger.info(log);
       }
