@@ -385,7 +385,7 @@
   <div class="main-column-right outputs-wrapper" ng-controller="LogsCtrl">
     <div id="outputs" class="outputs" auto-scroll bottom-bound="80">
       <ul class="list-group">
-        <li class="list-group-item" ng-repeat="log in logs">
+        <li class="list-group-item" ng-repeat="log in logs" ng-class="{ 'list-group-item-info': log.self && filters.active('all') }">
           <span class="fragment" ng-repeat="message in log.messages">{{message}}</span>
         </li>
       </ul>
