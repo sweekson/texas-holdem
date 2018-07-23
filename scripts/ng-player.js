@@ -37,6 +37,7 @@ angular.module('player', ['ngSanitize', 'util'])
   this.player = data => {
     const name = data.name;
     const chips = data.chips;
+    const bet = data.bet;
     const folded = data.folded !== undefined ? Number(data.folded) : '-';
     const allin = data.allin !== undefined ? Number(data.allin) : '-';
     const online = data.online !== undefined ? Number(data.online) : '-';
