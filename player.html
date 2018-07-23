@@ -260,7 +260,7 @@
               <tr>
                 <th>Player</th>
                 <th class="text-center" style="width: 60px">Round</th>
-                <th class="text-center" style="width: 60px">Stage</th>
+                <th class="text-center" style="width: 85px">Stage</th>
                 <th style="width: 75px">Hole</th>
                 <th style="width: 155px">Board</th>
                 <th class="text-center" style="width: 65px">Action</th>
@@ -287,10 +287,15 @@
                   <span class="poker-card-symbol" ng-bind-html="card.entity"></span>
                   </span>
                 </td>
-                <td class="text-center" ng-bind="action.action.type"></td>
-                <td class="text-right" ng-bind="action.action.amount || 0"></td>
-                <td class="text-right" ng-bind="action.player.bet + action.action.bet"></td>
-                <td class="text-right" ng-bind="action.table.bet"></td>
+                <td class="text-center" ng-if="action.action" ng-bind="action.action.type"></td>
+                <td class="text-right" ng-if="action.action" ng-bind="action.action.amount || 0"></td>
+                <td class="text-right" ng-if="action.action" ng-bind="action.player.bet + action.action.bet"></td>
+                <td class="text-right" ng-if="action.action" ng-bind="action.table.bet"></td>
+                <td class="text-center" ng-if="action.reward && action.reward.changes > 0">win</td>
+                <td class="text-center" ng-if="action.reward && action.reward.changes <= 0">loss</td>
+                <td class="text-right" ng-if="action.reward" ng-bind="action.reward.changes"></td>
+                <td class="text-right" ng-if="action.reward">-</td>
+                <td class="text-right" ng-if="action.reward">-</td>
               </tr>
             </tbody>
           </table>
