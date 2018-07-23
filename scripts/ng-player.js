@@ -310,18 +310,16 @@ angular.module('player', ['ngSanitize', 'util'])
 })
 
 .controller('PlayersCtrl', ($scope, converter, game) => {
-  game.rx.observable.table.joined$.subscribe(_ => {
+  $scope.reload = _ => {
     $scope.players = game.players.list.map(converter.player);
     $scope.$apply();
-  });
+  };
 
-  game.rx.observable.round.start$.subscribe(_ => {
-    $scope.players = game.players.list.map(converter.player);
-    $scope.$apply();
-  });
-
-  game.rx.observable.players.action$.subscribe(_ => $scope.$apply());
-  game.rx.observable.round.end$.subscribe(_ => $scope.$apply());
+  game.rx.observable.table.joined$.subscribe(_ => $scope.reload());
+  game.rx.observable.round.start$.subscribe(_ => $scope.reload());
+  game.rx.observable.round.deal$.subscribe(_ => $scope.reload());
+  game.rx.observable.round.end$.subscribe(_ => $scope.reload());
+  game.rx.observable.players.action$.subscribe(_ => $scope.reload());
 })
 
 .controller('RecordsCtrl', ($scope, game, records) => {
