@@ -38,13 +38,14 @@ angular.module('player', ['ngSanitize', 'util'])
     const name = data.name;
     const chips = data.chips;
     const bet = data.bet;
+    const wins = data.wins;
     const folded = data.folded !== undefined ? Number(data.folded) : '-';
     const allin = data.allin !== undefined ? Number(data.allin) : '-';
     const online = data.online !== undefined ? Number(data.online) : '-';
     const survive = data.survive !== undefined ? Number(data.survive) : '-';
     const human = data.human !== undefined ? Number(data.human) : '-';
     const self = data.self;
-    return { name, chips, cards, bet, folded, allin, online, survive, human, self };
+    return { name, chips, cards, bet, wins, folded, allin, online, survive, human, self };
   };
 
   this.action = index => actions[index];
