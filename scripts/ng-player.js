@@ -57,16 +57,16 @@ angular.module('player', ['ngSanitize', 'util'])
   this.list = [
     {
       table: { number: 1, rounds: 16 },
-      players: { list: [{}, {}, {}, {}, {}, {}, {}] },
+      players: [{}, {}, {}, {}, {}, {}, {}],
       player: { survive: true, chips: 3210 },
       actions: [
         {
-          player: { name: 'aaa', cards: ['AH', 'KC'].map(converter.card) },
+          player: { name: 'aaa', cards: ['AH', 'KC'].map(converter.card), bet: 0 },
           table: { rounds: 1, stage: 'Deal', cards: [0, 0, 0, 0, 0], bet: 50 },
           action: { type: 'call', amount: '20', bet: 20 }
         },
         {
-          player: { name: 'bbb', cards: ['TS', 'JD'].map(converter.card) },
+          player: { name: 'bbb', cards: ['TS', 'JD'].map(converter.card), bet: 0 },
           table: { rounds: 1, stage: 'Deal', cards: [0, 0, 0, 0, 0], bet: 50 },
           action: { type: 'fold', bet: 0 }
         },
@@ -77,12 +77,6 @@ angular.module('player', ['ngSanitize', 'util'])
         },
       ],
       time: new Date(2018, 7, 22, 20, 15)
-    },
-    {
-      table: { number: 2, rounds: 12 },
-      players: { list: [{}, {}, {}, {}, {}, {}] },
-      player: { survive: false, chips: 0 },
-      time: new Date(2018, 7, 22, 21, 34)
     }
   ];
 

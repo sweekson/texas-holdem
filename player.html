@@ -221,7 +221,7 @@
             <tbody>
               <tr ng-repeat="record in records.list" ng-class="{ info: selected === record }">
                 <td class="text-center" style="width: 70px;" ng-bind="record.table.number"></td>
-                <td class="text-center" style="width: 70px;" ng-bind="record.players.list.length"></td>
+                <td class="text-center" style="width: 70px;" ng-bind="record.players.length"></td>
                 <td class="text-center" style="width: 70px;" ng-bind="record.table.rounds"></td>
                 <td class="text-center" style="width: 70px;" ng-bind="record.player.survive ? 'YES' : 'NO'"></td>
                 <td class="text-right" style="width: 70px;" ng-bind="record.player.chips"></td>
@@ -282,7 +282,7 @@
                   </span>
                 </td>
                 <td class="poker-card-xs-cell">
-                  <span class="poker-card poker-card-xs" ng-class="card.symbol" ng-repeat="card in action.table.cards track by $index">
+                  <span class="poker-card poker-card-xs" ng-class="card.symbol" ng-repeat="card in action.table.board track by $index">
 										<span class="poker-card-number" ng-bind="card.number"></span>
                   <span class="poker-card-symbol" ng-bind-html="card.entity"></span>
                   </span>
