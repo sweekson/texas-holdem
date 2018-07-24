@@ -144,10 +144,13 @@ angular.module('player', ['ngSanitize', 'util'])
     });
   };
 
-  this.over = (table, winners) => {
+  this.over = (table, player, players, winners) => {
     const game = games.get(table.number);
     game.table.rounds = table.rounds;
+    game.player = { survive: player.survive, chips: player.chips };
+    game.players = players.map(v => v.name);
     game.winners = winners.slice(0);
+    game.datetime = new Date().getTime();
     this.list.push(game);
     games.delete(table.number);
   };
@@ -193,7 +196,7 @@ angular.module('player', ['ngSanitize', 'util'])
   });
 
   game.rx.observable.game.over$.subscribe(_ => {
-    records.over(game.table, game.players.winners);
+    records.over(game.table, game.player, game.players.list, game.players.winners);
     logger.info({
       type: 'game-over',
       messages: ['(GAME OVER)'],
