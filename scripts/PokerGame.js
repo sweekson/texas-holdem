@@ -235,6 +235,7 @@ Player.format = data => {
   const name = data.playerName;
   const chips = data.chips;
   const bet = data.bet;
+  const roundBet = data.roundBet;
   const minBet = data.minBet;
   const hand = data.hand;
   const cards = Player.cards(data.cards);
@@ -243,7 +244,7 @@ Player.format = data => {
   const online = data.isOnline;
   const survive = data.isSurvive;
   const human = data.isHuman;
-  return { name, chips, bet, minBet, hand, cards, folded, allin, online, survive, human };
+  return { name, chips, bet, roundBet, minBet, hand, cards, folded, allin, online, survive, human };
 };
 
 Player.cards = cards => {
