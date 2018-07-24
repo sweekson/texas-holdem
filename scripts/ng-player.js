@@ -80,18 +80,76 @@ angular.module('player', ['ngSanitize', 'util'])
     }
   ];
 
-  this.game = data => games.set(data.table.number, data);
+  this.game = table => games.set(table.number, {
+    table: { number: table.number },
+    actions: []
+  });
 
-  this.action = (table, data) => {
-    const game = games.get(table);
-    game.actions.push(data);
+  this.action = (table, player, action) => {
+    const game = games.get(table.number);
+
+    game.actions.push({
+      table: {
+        rounds: table.rounds,
+        stage: table.stage,
+        board: GameTable.board(table.cards).map(converter.card),
+        bet: table.bet,
+      },
+      player: {
+        name: player.name,
+        chips: player.chips,
+        cards: [],
+        bet: player.roundBet,
+      },
+      action: {
+        type: action.type,
+        amount: action.amount || 0,
+        chips: action.chips,
+        bet: player.bet,
+      }
+    });
   };
 
-  this.over = (table, data) => {
-    const game = games.get(table);
-    game.winners = data.winners;
+  this.end = (table, players) => {
+    const game = games.get(table.number);
+    const map = new Map();
+
+    players.forEach(player => {
+      map.set(player.name, player);
+      game.actions.push({
+        table: {
+          rounds: table.rounds,
+          stage: table.stage,
+          board: GameTable.board(table.cards).map(converter.card),
+          bet: table.bet,
+        },
+        player: {
+          name: player.name,
+          chips: player.chips,
+          cards: player.cards.map(converter.card),
+          bet: player.roundBet,
+        },
+        reward: {
+          chips: player.reward.chips,
+          final: player.reward.final,
+          changes: player.reward.changes,
+        }
+      });
+    });
+
+    game.actions.forEach(action => {
+      if (action.table.rounds === table.rounds) {
+        action.player.cards = map.get(action.player.name).cards.map(converter.card);
+      }
+    });
+  };
+
+  this.over = (table, winners) => {
+    const game = games.get(table.number);
+    game.table.rounds = table.rounds;
+    game.winners = winners.slice(0);
     this.list.push(game);
-    games.delete(table);
+    games.delete(table.number);
   };
 })
 
