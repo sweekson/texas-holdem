@@ -117,9 +117,9 @@
       <div role="tabpanel" class="tab-pane" ng-class="{ active: tabs.active('watch') }">
         <div>
           <h4>Game Status</h4>
-          <div class="row" ng-controller="GameInfoCtrl">
+          <div class="row">
             <div class="col-xs-12 col-sm-4">
-              <label>Table Number:</label> <span ng-bind="table.number"></span>
+              <label>Table Number:</label> <span ng-bind="game.table.number"></span>
             </div>
 
             <div class="col-xs-12 col-sm-8" ng-if="game.table.ready">
@@ -127,15 +127,15 @@
             </div>
 
             <div class="col-xs-12 col-sm-4" ng-if="game.table.ready">
-              <label>Rounds:</label> <span ng-bind="table.rounds"></span>
+              <label>Rounds:</label> <span ng-bind="game.table.rounds"></span>
             </div>
 
             <div class="col-xs-12 col-sm-4" ng-if="game.table.ready">
-              <label>Stage:</label> <span ng-bind="table.stage"></span>
+              <label>Stage:</label> <span ng-bind="game.table.stage"></span>
             </div>
 
             <div class="col-xs-12 col-sm-4" ng-if="game.table.ready">
-              <label>Total Bet:</label> <span ng-bind="table.bet"></span>
+              <label>Total Bet:</label> <span ng-bind="game.table.bet"></span>
             </div>
           </div>
 

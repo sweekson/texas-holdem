@@ -338,10 +338,6 @@ angular.module('player', ['ngSanitize', 'util'])
   $scope.rejoin = () => $scope.options.rejoin = !$scope.options.rejoin;
 })
 
-.controller('GameInfoCtrl', ($scope, game) => {
-  $scope.table = game.table;
-})
-
 .controller('CardsCtrl', ($scope, converter, game) => {
   const filter = rxjs.operators.filter;
   const map = rxjs.operators.map;
