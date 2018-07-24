@@ -210,7 +210,7 @@
               <th class="text-center" style="width: 70px;">Rounds</th>
               <th class="text-center" style="width: 70px;">Survive</th>
               <th class="text-right" style="width: 70px;">Chips</th>
-              <th class="text-center" style="width: 100px;">Time</th>
+              <th class="text-center" style="width: 120px;">Time</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -225,7 +225,7 @@
                 <td class="text-center" style="width: 70px;" ng-bind="record.table.rounds"></td>
                 <td class="text-center" style="width: 70px;" ng-bind="record.player.survive ? 'YES' : 'NO'"></td>
                 <td class="text-right" style="width: 70px;" ng-bind="record.player.chips"></td>
-                <td class="text-center" style="width: 100px;" ng-bind="record.time | date:'HH:mm'"></td>
+                <td class="text-center" style="width: 120px;" ng-bind="record.datetime | date:'MM/dd HH:mm'"></td>
                 <td>
                   <button class="btn btn-xs btn-link" type="button" ng-click="select(record)">
 										Details
@@ -246,7 +246,7 @@
             </div>
 
             <div class="col-xs-4">
-              <label>Players:</label> <span ng-bind="selected.players.list.length"></span>
+              <label>Players:</label> <span ng-bind="selected.players.length"></span>
             </div>
 
             <div class="col-xs-4">
