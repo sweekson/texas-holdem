@@ -57,26 +57,26 @@ angular.module('player', ['ngSanitize', 'util'])
   this.list = [
     {
       table: { number: 1, rounds: 16 },
-      players: [{}, {}, {}, {}, {}, {}, {}],
       player: { survive: true, chips: 3210 },
+      players: ['', '', '', '', '', ''],
       actions: [
         {
-          player: { name: 'aaa', cards: ['AH', 'KC'].map(converter.card), bet: 0 },
-          table: { rounds: 1, stage: 'Deal', cards: [0, 0, 0, 0, 0], bet: 50 },
+          player: { name: '49cdc31909f30a608d9c093e76d80c63', cards: ['AH', 'KC'].map(converter.card), bet: 0 },
+          table: { rounds: 1, stage: 'Deal', board: [0, 0, 0, 0, 0], bet: 50 },
           action: { type: 'call', amount: '20', bet: 20 }
         },
         {
-          player: { name: 'bbb', cards: ['TS', 'JD'].map(converter.card), bet: 0 },
-          table: { rounds: 1, stage: 'Deal', cards: [0, 0, 0, 0, 0], bet: 50 },
+          player: { name: '959dc2f279097c2731d00a11aba2b710', cards: ['TS', 'JD'].map(converter.card), bet: 0 },
+          table: { rounds: 1, stage: 'Deal', board: [0, 0, 0, 0, 0], bet: 50 },
           action: { type: 'fold', bet: 0 }
         },
         {
-          player: { name: 'aaa', cards: ['AH', 'KC'].map(converter.card) },
-          table: { rounds: 1, stage: 'Flop', cards: ['5D', '6H', '7S'].map(converter.card).concat([0, 0]), bet: 130 },
+          player: { name: '49cdc31909f30a608d9c093e76d80c63', cards: ['AH', 'KC'].map(converter.card) },
+          table: { rounds: 1, stage: 'Flop', board: ['5D', '6H', '7S'].map(converter.card).concat([0, 0]), bet: 130 },
           action: { type: 'bet', amount: 80, bet: 80 }
         },
       ],
-      time: new Date(2018, 7, 22, 20, 15)
+      datetime: new Date(2018, 7, 22, 20, 15)
     }
   ];
 
