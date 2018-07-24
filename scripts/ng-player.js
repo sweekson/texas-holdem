@@ -172,6 +172,7 @@ angular.module('player', ['ngSanitize', 'util'])
   });
 
   game.rx.observable.table.joined$.subscribe(_ => {
+    records.game({ number: game.table.number });
     $scope.tabs.toggle('watch');
     logger.info({
       type: 'join-table',
@@ -182,6 +183,7 @@ angular.module('player', ['ngSanitize', 'util'])
 
   game.rx.observable.game.start$.subscribe(_ => {
     const number = game.table.number;
+    records.game({ number });
     $scope.tabs.toggle('watch');
     logger.info({
       type: 'game-start',
@@ -191,6 +193,7 @@ angular.module('player', ['ngSanitize', 'util'])
   });
 
   game.rx.observable.game.over$.subscribe(_ => {
+    records.over(game.table, game.players.winners);
     logger.info({
       type: 'game-over',
       messages: ['(GAME OVER)'],
@@ -224,6 +227,7 @@ angular.module('player', ['ngSanitize', 'util'])
   });
 
   game.rx.observable.round.end$.subscribe(data => {
+    records.end(game.table, game.players.list);
     logger.info({
       type: 'round-end',
       messages: ['(ROUND END)'],
@@ -245,6 +249,8 @@ angular.module('player', ['ngSanitize', 'util'])
 
   game.rx.observable.players.action$.subscribe(data => {
     const action = new PlayerAction(data.action);
+    const player = Player.format(data.players.find(v => v.playerName === action.name));
+    records.action(game.table, player, action);
     logger.info({
       type: 'show-action',
       messages: ['(SHOW ACTION)', `Player: ${action.name}`, `Action: ${action.type}`, `Chips: ${action.chips}`],
