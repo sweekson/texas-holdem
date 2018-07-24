@@ -366,6 +366,7 @@ class PlayerAction {
   constructor(data) {
     this.name = data.playerName;
     this.type = data.action;
+    data.amount && (this.amount = data.amount);
     this.chips = data.chips;
     this.self = data.self;
   }
