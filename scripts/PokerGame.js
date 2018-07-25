@@ -252,9 +252,10 @@ Player.cards = cards => {
 };
 
 class Players {
-  constructor() {
+  constructor(self) {
     this.list = [];
     this.map = new Map();
+    this.self = self;
     this.wins = new Map();
     this.winners = [];
   }
@@ -265,6 +266,8 @@ class Players {
    */
   assign(list) {
     this.list = list.map(AnonymousPlayer.create);
+    Object.assign(this.self, this.list.find(v => v.name === this.self.name));
+    this.list.splice(this.list.findIndex(v => v.name === this.self.name), 1, this.self);
     this.list.forEach(player => {
       this.map.set(player.name, player);
       this.wins.set(player.name, this.wins.get(player.name) || 0);
@@ -386,7 +389,7 @@ class PokerGame extends EventTarget {
     this.socket = null;
     this.table = new GameTable();
     this.player = new Player(this.options.player);
-    this.players = new Players();
+    this.players = new Players(this.player);
     this.bot = this.options.bot;
     this.games = 0;
     this.connected = false;
@@ -506,40 +509,30 @@ class PokerGame extends EventTarget {
     switch (event) {
       case PokerGame.messages.game_start:
         this.table = new GameTable(data.tableNumber);
-        this.players = new Players();
         this.player = new Player(this.options.player);
+        this.players = new Players(this.player);
         break;
 
       case PokerGame.messages.new_round:
       case PokerGame.messages.join:
         table.assign(data.table);
         players.assign(data.players);
-        player.assign(data.players.find(v => v.playerName === player.name));
-        player.reward.refresh(player.chips + player.bet);
-        players.set(player.name, player);
         break;
 
       case PokerGame.messages.deal:
         table.assign(data.table);
         players.refresh(data.players);
-        player.assign(data.players.find(v => v.playerName === player.name));
-        players.set(player.name, player);
           break;
 
       case PokerGame.messages.round_end:
         table.assign(data.table);
         players.refresh(data.players);
         players.resolve(data.players);
-        player.assign(data.players.find(v => v.playerName === player.name));
-        player.reward.resolve(player.chips);
-        players.set(player.name, player);
           break;
 
       case PokerGame.messages.game_over:
         ++this.games;
         players.refresh(data.players);
-        player.assign(data.players.find(v => v.playerName === player.name));
-        players.set(player.name, player);
         players.winners = data.winners.map(data => new PlayerWinner(data));
         options.rejoin && this.games < options.games && this.join();
           break;
