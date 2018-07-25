@@ -54,31 +54,7 @@ angular.module('player', ['ngSanitize', 'util'])
 .service('records', function (converter) {
   const games = new Map();
 
-  this.list = [
-    {
-      table: { number: 1, rounds: 16 },
-      player: { survive: true, chips: 3210 },
-      players: ['', '', '', '', '', ''],
-      actions: [
-        {
-          player: { name: '49cdc31909f30a608d9c093e76d80c63', cards: ['AH', 'KC'].map(converter.card), bet: 0 },
-          table: { rounds: 1, stage: 'Deal', board: [0, 0, 0, 0, 0], bet: 50 },
-          action: { type: 'call', amount: '20', bet: 20 }
-        },
-        {
-          player: { name: '959dc2f279097c2731d00a11aba2b710', cards: ['TS', 'JD'].map(converter.card), bet: 0 },
-          table: { rounds: 1, stage: 'Deal', board: [0, 0, 0, 0, 0], bet: 50 },
-          action: { type: 'fold', bet: 0 }
-        },
-        {
-          player: { name: '49cdc31909f30a608d9c093e76d80c63', cards: ['AH', 'KC'].map(converter.card) },
-          table: { rounds: 1, stage: 'Flop', board: ['5D', '6H', '7S'].map(converter.card).concat([0, 0]), bet: 130 },
-          action: { type: 'bet', amount: 80, bet: 80 }
-        },
-      ],
-      datetime: new Date(2018, 7, 22, 20, 15)
-    }
-  ];
+  this.list = [];
 
   this.game = table => games.set(table.number, {
     table: { number: table.number },
