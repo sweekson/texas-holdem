@@ -534,7 +534,7 @@ class PokerGame extends EventTarget {
         ++this.games;
         players.refresh(data.players);
         players.winners = data.winners.map(data => new PlayerWinner(data));
-        options.rejoin && this.games < options.games && this.join();
+        options.rejoin && this.games < options.games ? this.join() : this.disconnect();
           break;
 
       case PokerGame.messages.action:
