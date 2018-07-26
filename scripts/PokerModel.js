@@ -101,7 +101,7 @@ class PokerActionModel extends MachineLearningModel {
   prepare() {
     this.model = tf.sequential({
       layers: [
-        tf.layers.dense({ units: 50, inputShape: 8 }),
+        tf.layers.dense({ units: 50, inputShape: 9 }),
         tf.layers.dense({ units: 50, activation: 'relu' }),
         tf.layers.dense({ units: 50, activation: 'relu' }),
         tf.layers.dense({ units: 50, activation: 'relu' }),
