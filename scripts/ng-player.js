@@ -135,11 +135,12 @@ angular.module('player', ['ngSanitize', 'util'])
   };
 })
 
-.controller('RootCtrl', ($scope, $window, logger, bools, game, records) => {
+.controller('RootCtrl', ($scope, $window, logger, bools, game, records, bot) => {
   $scope.logger = logger;
   $scope.tabs = bools.create('tabs', {  connect: !0, watch: !1, records: !1 }, { single: true });
   $scope.game = game;
   $scope.records = records;
+  $scope.bot = bot;
   $window.game = game;
 
   game.rx.observable.events$.subscribe(console.log);
