@@ -90,9 +90,33 @@ angular.module('train', ['util'])
   }
 })
 
-.controller('PredictCtrl', ($scope, logger, reader, model) => {
+.controller('PredictCtrl', ($scope, logger, url, reader, model) => {
+  $scope.foramt = url.parser.search(/format=(\w+)/, 1) || 'indexes';
   $scope.xs = null;
   $scope.actions = ['call', 'raise', 'bet', 'check', 'fold', 'allin'];
+  $scope.foramtter = {
+    indexes: _ => $scope.text.match(/\d+/g).map(Number),
+    values: _ => $scope.text.match(/\w+/g),
+    scores: _ => $scope.text.match(/\w+/g),
+  };
+  $scope.handlers = {
+    indexes: _ => $scope.xs,
+    values: _ => {
+      const [ features ] = $scope.xs;
+      const cards = features.slice(1, 8).map(v => v.toUpperCase());
+      const indexes = new Poker(cards).indexes.map(v => v + 1);
+      features.splice(1, 7, ...indexes);
+      return [features.map(Number)];
+    },
+    scores: _ => {
+      const [ features ] = $scope.xs;
+      const cards = features.slice(1, 8).filter(v => v.length === 2).map(v => v.toUpperCase());
+      const analysis = new Evaluator().describe(cards);
+      const hand = new PokerHand(analysis.best.join(' '));
+      features.splice(1, 7, hand.score);
+      return [features.map(Number)];
+    }
+  };
 
   model.on('output', e => {
     const action = $scope.actions[e.data];
@@ -109,7 +133,7 @@ angular.module('train', ['util'])
   };
 
   $scope.input = _ => {
-    const inputs = $scope.text.match(/\d+/g).map(Number);
+    const inputs = $scope.foramtter[$scope.foramt]();
     $scope.xs = [inputs];
   };
 
@@ -117,6 +141,7 @@ angular.module('train', ['util'])
     if (!$scope.xs || !$scope.xs.length) {
       return logger.log(['[WARNING]', 'Empty inputs']);
     }
+    $scope.xs = $scope.handlers[$scope.foramt]();
     logger.log([`Inputs: ${$scope.xs.join(', ')}`]);
     model.predict(tf.tensor2d($scope.xs));
   };

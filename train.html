@@ -126,6 +126,15 @@
       </div>
 
       <div class="form-group">
+        <label>Input Format</label>
+        <select class="form-control" ng-model="foramt">
+          <option value="indexes">Indexes</option>
+          <option value="values">Values</option>
+          <option value="scores">Scores</option>
+        </select>
+      </div>
+
+      <div class="form-group">
         <label for="predict-text">Text Inputs</label>
         <input id="predict-text" type="text" class="form-control" ng-model="text" ng-change="input()">
       </div>
@@ -148,6 +157,9 @@
 
   <script src="vendors/tensorflow.min.js"></script>
   <script src="vendors/angular.min.js"></script>
+  <script src="vendors/pokerhand.min.js"></script>
+  <script src="scripts/Poker.js"></script>
+  <script src="scripts/Evaluator.js"></script>
   <script src="scripts/PokerModel.js"></script>
   <script src="scripts/ng-util.js"></script>
   <script src="scripts/ng-train.js"></script>
