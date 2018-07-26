@@ -99,15 +99,19 @@ class PokerActionModel extends MachineLearningModel {
   }
 
   prepare() {
+    const matches = location.search.match(/shape=(\d+)/);
+    const shape = matches ? Number(matches[1]) : 9;
+
     this.model = tf.sequential({
       layers: [
-        tf.layers.dense({ units: 50, inputShape: 9 }),
+        tf.layers.dense({ units: 50, inputShape: shape }),
         tf.layers.dense({ units: 50, activation: 'relu' }),
         tf.layers.dense({ units: 50, activation: 'relu' }),
         tf.layers.dense({ units: 50, activation: 'relu' }),
         tf.layers.dense({ units: 6, activation: 'softmax' })
       ]
     });
+
     this.optimizer = tf.train.adam(this.options.learningRate);
   }
 
