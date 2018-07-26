@@ -92,7 +92,7 @@ angular.module('train', ['util'])
 
 .controller('PredictCtrl', ($scope, logger, reader, model) => {
   $scope.xs = null;
-  $scope.actions = ['fold', 'check', 'bet', 'raise', 'call', 'allin'];
+  $scope.actions = ['call', 'raise', 'bet', 'check', 'fold', 'allin'];
 
   model.on('output', e => {
     const action = $scope.actions[e.data];
@@ -120,4 +120,9 @@ angular.module('train', ['util'])
     logger.log([`Inputs: ${$scope.xs.join(', ')}`]);
     model.predict(tf.tensor2d($scope.xs));
   };
+})
+
+.controller('LogsCtrl', ($scope, logger) => {
+  $scope.logs = logger.logs({ type: true });
+  logger.onflush(e => $scope.logs = logger.logs({ type: true }));
 });

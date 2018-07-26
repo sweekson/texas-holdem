@@ -136,10 +136,10 @@
     </form>
   </div>
 
-  <div class="main-column-right outputs-wrapper">
+  <div class="main-column-right outputs-wrapper" ng-controller="LogsCtrl">
     <div class="outputs" auto-scroll bottom-bound="80">
       <ul class="list-group">
-        <li class="list-group-item" ng-repeat="log in logger.logs" ng-class="log.type">
+        <li class="list-group-item" ng-repeat="log in logs">
           <span class="fragment" ng-repeat="message in log.messages">{{message}}</span>
         </li>
       </ul>
