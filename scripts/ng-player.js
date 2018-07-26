@@ -243,7 +243,7 @@ angular.module('player', ['ngSanitize', 'util'])
   });
 })
 
-.controller('LoadModelCtrl', ($scope, logger, model) => {
+.controller('LoadModelCtrl', ($scope, logger, model, bot) => {
   $scope.json = null;
   $scope.weights = null;
   $scope.loading = false;
@@ -254,6 +254,7 @@ angular.module('player', ['ngSanitize', 'util'])
       messages: ['Model loaded successfully'],
     });
     $scope.loading = false;
+    bot.load(model);
     $scope.$apply();
   });
 
