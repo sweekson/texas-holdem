@@ -8,7 +8,10 @@ angular.module('player', ['ngSanitize', 'util'])
   games: 5
 })
 
-.factory('bot', () => new PokerBaseBot())
+.factory('bot', (url) => {
+  const bot = url.parser.search(/bot=(\w+)/, 1);
+  return !bot ? new PokerBaseBot() : new window[bot]();
+})
 .factory('game', (bot) => new PokerGame({ bot }))
 .factory('model', () => new PokerActionModel())
 
