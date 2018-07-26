@@ -78,40 +78,42 @@
 
         <hr>
 
-        <h4>Load Model</h4>
-        <form class="form-vertical" ng-controller="LoadModelCtrl">
-          <div class="row">
-            <div class="col-xs-6 col-sm-4">
-              <div class="form-group">
-                <label for="json-upload" class="btn btn-default">
-									<input id="json-upload" type="file" class="hide" ng-model="json" ng-file-model>
-									<span>Browse JSON</span>
-								</label>
-                <span class="file-name">
-									<span ng-bind="json.name"></span>
-                </span>
+        <section ng-if="bot.isModelBot">
+          <h4>Load Model</h4>
+          <form class="form-vertical" ng-controller="LoadModelCtrl">
+            <div class="row">
+              <div class="col-xs-6 col-sm-4">
+                <div class="form-group">
+                  <label for="json-upload" class="btn btn-default">
+                    <input id="json-upload" type="file" class="hide" ng-model="json" ng-file-model>
+                    <span>Browse JSON</span>
+                  </label>
+                  <span class="file-name">
+                    <span ng-bind="json.name"></span>
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <div class="col-xs-6 col-sm-4">
-              <div class="form-group">
-                <label for="weights-upload" class="btn btn-default">
-									<input id="weights-upload" type="file" class="hide" ng-model="weights" ng-file-model>
-									<span>Browse Weights</span>
-								</label>
-                <span class="file-name">
-									<span ng-bind="weights.name"></span>
-                </span>
+              <div class="col-xs-6 col-sm-4">
+                <div class="form-group">
+                  <label for="weights-upload" class="btn btn-default">
+                    <input id="weights-upload" type="file" class="hide" ng-model="weights" ng-file-model>
+                    <span>Browse Weights</span>
+                  </label>
+                  <span class="file-name">
+                    <span ng-bind="weights.name"></span>
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <div class="col-xs-12 col-sm-2">
-              <div class="form-group">
-                <button class="btn btn-primary" type="button" ng-click="load()" ng-disabled="loading">Load Model</button>
+              <div class="col-xs-12 col-sm-2">
+                <div class="form-group">
+                  <button class="btn btn-primary" type="button" ng-click="load()" ng-disabled="loading">Load Model</button>
+                </div>
               </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </section>
       </div>
 
       <div role="tabpanel" class="tab-pane" ng-class="{ active: tabs.active('watch') }">
