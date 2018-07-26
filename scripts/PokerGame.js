@@ -14,6 +14,10 @@ class Bot {
   }
 
   react(game) {}
+
+  get isModelBot() {
+    return this instanceof ModelBot;
+  }
 }
 
 class PokerBaseBot extends Bot {
@@ -185,10 +189,55 @@ class PokerBaseBot extends Bot {
   }
 }
 
+window.PokerBaseBot = PokerBaseBot;
+
 PokerBaseBot.statuses = {
   risk: 1,
   danger: 2
 };
+
+class ModelBot extends Bot {
+  constructor() {
+    super();
+    this.model = null;
+  }
+
+  load(model) {
+    this.model = model;
+
+    this.model.on('output', e => {
+      const action = Poker.actions[e.data];
+      this.respond({ action });
+    });
+  }
+}
+
+class PokerModelBotV1 extends ModelBot {
+  react(game) {
+    const stage = game.table.stage;
+    this[`on${stage}`](game);
+  }
+
+  predict(game) {
+    const { table, players, player } = game;
+    const cards = player.cards.concat(table.cards).filter(v => v);
+    const analysis = new Evaluator().describe(cards);
+    const hand = new PokerHand(analysis.best.join(' '));
+    const score = hand.score;
+    const xs = [players.list.length, score, player.chips];
+    this.model.predict(xs);
+  }
+
+  onDeal(game) {
+
+  }
+
+  onFlop(game) { this.predict(game); }
+  onTurn(game) { this.predict(game); }
+  onRiver(game) { this.predict(game); }
+}
+
+window.PokerModelBotV1 = PokerModelBotV1;
 
 class PlayerChipsReward {
   constructor(chips) {
