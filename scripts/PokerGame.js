@@ -556,6 +556,7 @@ class PokerGame extends EventTarget {
     this.options = Object.assign({}, this.defaults, options);
     this.server = this.options.server || thie.server;
     this.player = this.options.player ? new Player(this.options.player) : this.player;
+    this.players = new Players(this.player);
     this.bot = this.options.bot || this.bot;
   }
 
