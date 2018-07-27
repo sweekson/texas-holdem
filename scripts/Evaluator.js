@@ -295,9 +295,9 @@
     }
 
     highestCard (handCards, bestFive) {
-      let ranks = handCards.map(card => card[0]).sort((a, b) => SCORE[a] - SCORE[b])
+      let ranks = handCards.sort((a, b) => SCORE[a[0]] - SCORE[b[0]]);
       bestFive.push(...ranks.slice(-5));
-      return ranks.pop();
+      return ranks.pop()[0];
     }
 
     score (card, times) {
