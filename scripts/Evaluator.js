@@ -166,7 +166,7 @@
           })
           .forEach((card) => {
             if (card.match(new RegExp(_twos))) {
-              bestFive.push(card);
+              if (bestFive.length < 5) bestFive.push(card);
             }
           });
         return _fullHOuse;
