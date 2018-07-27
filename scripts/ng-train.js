@@ -98,6 +98,7 @@ angular.module('train', ['util'])
     indexes: _ => $scope.text.match(/\d+/g).map(Number),
     values: _ => $scope.text.match(/\w+/g),
     scores: _ => $scope.text.match(/\w+/g),
+    rate: _ => $scope.text.match(/\w+/g),
   };
   $scope.handlers = {
     indexes: _ => $scope.xs,
@@ -115,6 +116,13 @@ angular.module('train', ['util'])
       const hand = new PokerHand(analysis.best.join(' '));
       features.splice(1, 7, hand.score);
       return [features.map(Number)];
+    },
+    rate: _ => {
+      const [ features ] = $scope.xs;
+      const cards = features.slice(1, 3).map(v => v.toUpperCase());
+      const rate = Pokereval.rate(...cards);
+      features.splice(1, 2, Number((rate).toFixed(2)));
+      return [features];
     }
   };
 
