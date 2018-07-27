@@ -16,14 +16,15 @@ angular.module('train', ['util'])
   });
 })
 
-.controller('TrainModelCtrl', ($scope, logger, reader, model) => {
+.controller('TrainModelCtrl', ($scope, $timeout, logger, reader, dropdowns, model) => {
   $scope.options = {};
   $scope.options.learningRate = .0001;
   $scope.options.epochs = 200;
   $scope.options.batchSize = 2000;
-  $scope.xs = null;
-  $scope.ys = null;
   $scope.fitting = false;
+  $scope.ready = false;
+  $scope.files = { inputs: [], outputs: [] };
+  $scope.dropdowns = dropdowns.create('upload', { inputs: false }, { outputs: false });
 
   model.on('fitted', () => {
     $scope.fitting = false;
@@ -40,31 +41,61 @@ angular.module('train', ['util'])
     $scope.options[target] = value;
   };
 
-  $scope.select = (file, target) => {
-    reader.json($scope[file], source => {
-      $scope[file].loaded = true;
-      $scope[file].source = source;
-      $scope[target] = source;
-      $scope.$apply();
+  $scope.select = (target) => {
+    const files = $scope.files[target] = [...$scope[target]];
+
+    files.forEach(file => {
+      reader.json(file, source => {
+        file.loaded = true;
+        file.source = source;
+        $scope.ready = $scope.check();
+        $scope.$apply();
+      });
     });
   };
 
+  $scope.check = _ => {
+    if (!$scope.files.inputs.length) { return false; }
+    if (!$scope.files.outputs.length) { return false; }
+    if (!$scope.files.inputs.every(v => v.loaded)) { return false; }
+    if (!$scope.files.outputs.every(v => v.loaded)) { return false; }
+    return true;
+  };
+
   $scope.train = _ => {
-    if (!$scope.xs || !$scope.ys) {
+    if (!$scope.files.inputs.length || !$scope.files.outputs.length) {
       return logger.log(['[WARNING]', 'Train file(s) yet selected']);
     }
 
-    const xs = tf.tensor2d($scope.xs);
-    const ys = tf.tensor2d($scope.ys);
+    if ($scope.files.inputs.length !== $scope.files.outputs.length) {
+      return logger.log(['[WARNING]', 'Inputs and outputs files length is not equal']);
+    }
+
+    if (!$scope.files.inputs.every(v => v.loaded)) {
+      return logger.log(['[WARNING]', 'Inputs files yet loaded']);
+    }
+
+    if (!$scope.files.outputs.every(v => v.loaded)) {
+      return logger.log(['[WARNING]', 'Outputs files yet loaded']);
+    }
+
     model.configure($scope.options);
+
     logger.log([
       '(Training Model)',
       `Learning rate: ${$scope.options.learningRate}`,
       `Epochs: ${$scope.options.epochs}`,
       `Batch size: ${$scope.options.batchSize}`,
     ]);
-    setTimeout(_ => model.fit(xs, ys), 100);
-    $scope.fitting = true;
+
+    $timeout(async _ => {
+      $scope.fitting = true;
+      for (const index in [...$scope.inputs]) {
+        const xs = $scope.inputs.item(index).source;
+        const ys = $scope.outputs.item(index).source;
+        await model.fit(tf.tensor2d(xs), tf.tensor2d(ys));
+      }
+    }, 100);
   };
 
   $scope.save = _ => model.save();

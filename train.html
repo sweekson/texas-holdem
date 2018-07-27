@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="styles/font-awesome.min.css">
   <link rel="stylesheet" href="styles/styles.css">
   <title>Train Model & Test</title>
 </head>
@@ -44,33 +45,53 @@
       <div class="row">
         <div class="col-sm-6">
           <div class="form-group">
-            <label for="train-inputs" class="btn btn-default">
-              <input id="train-inputs" type="file" class="hide" ng-model="inputs" ng-file-model ng-change="select('inputs', 'xs')" ng-disabled="fitting">
-              <span>Browse Inputs</span>
-            </label>
-            <span class="file-name">
-              <span ng-bind="inputs.name"></span>
-            <span ng-if="inputs.loaded">(loaded)</span>
+            <span class="btn-group">
+              <label for="train-inputs" class="btn btn-default">
+                <input id="train-inputs" type="file" multiple class="hide" ng-model="inputs" ng-file-model ng-change="select('inputs')" ng-disabled="fitting">
+                <span>Browse Inputs</span>
+              </label>
+
+              <button class="btn btn-default outline-0 dropdown" type="button" ng-if="inputs" ng-class="{ open: dropdowns.active('inputs') }" click-on-others="dropdowns.close('inputs')"  ng-click="dropdowns.open('inputs')">
+                <span class="fa fa-angle-down"></span>
+                <ul class="dropdown-menu overflow-auto" style="max-height: 300px;">
+                  <li ng-repeat="file in inputs">
+                    <a href="#">
+                      <span ng-bind="file.name"></span>
+                      <span ng-if="file.loaded">(loaded)</span>
+                    </a>
+                  </li>
+                </ul>
+              </button>
             </span>
           </div>
         </div>
 
         <div class="col-sm-6">
           <div class="form-group">
-            <label for="train-outputs" class="btn btn-default">
-              <input id="train-outputs" type="file" class="hide" ng-model="outputs" ng-file-model ng-change="select('outputs', 'ys')" ng-disabled="fitting">
-              <span>Browse Outputs</span>
-            </label>
-            <span class="file-name">
-              <span ng-bind="outputs.name"></span>
-            <span ng-if="outputs.loaded">(loaded)</span>
+            <span class="btn-group">
+              <label for="train-outputs" class="btn btn-default">
+                <input id="train-outputs" type="file" multiple class="hide" ng-model="outputs" ng-file-model ng-change="select('outputs')" ng-disabled="fitting">
+                <span>Browse Outputs</span>
+              </label>
+
+              <button class="btn btn-default outline-0 dropdown" type="button" ng-if="outputs" ng-class="{ open: dropdowns.active('outputs') }" click-on-others="dropdowns.close('outputs')"  ng-click="dropdowns.open('outputs')">
+                <span class="fa fa-angle-down"></span>
+                <ul class="dropdown-menu overflow-auto" style="max-height: 300px;">
+                  <li ng-repeat="file in outputs">
+                    <a href="#">
+                      <span ng-bind="file.name"></span>
+                      <span ng-if="file.loaded">(loaded)</span>
+                    </a>
+                  </li>
+                </ul>
+              </button>
             </span>
           </div>
         </div>
       </div>
 
       <div class="form-group">
-        <button class="btn btn-primary" type="button" ng-click="train()" ng-disabled="fitting">Train Model</button>
+        <button class="btn btn-primary" type="button" ng-click="train()" ng-disabled="fitting || !ready">Train Model</button>
         <button class="btn btn-default" type="button" ng-click="save()" ng-disabled="fitting">Save Model</button>
       </div>
     </form>
