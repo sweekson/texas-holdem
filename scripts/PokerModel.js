@@ -34,7 +34,7 @@ class MachineLearningModel extends EventTarget {
   }
 
   fit(xs, ys) {
-    this.model.fit(xs, ys, {
+    return this.model.fit(xs, ys, {
       epochs: this.options.epochs,
       batchSize: this.options.batchSize,
       shuffle: this.options.shuffle
