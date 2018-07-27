@@ -224,12 +224,19 @@ class PokerModelBotV1 extends ModelBot {
     const analysis = new Evaluator().describe(cards);
     const hand = new PokerHand(analysis.best.join(' '));
     const score = hand.score;
-    const xs = [players.list.length, score, player.chips];
-    this.model.predict(xs);
+    const xs = [[players.list.length, score, player.chips]];
+    this.model.predict(tf.tensor2d(xs));
   }
 
   onDeal(game) {
+    const minBet = game.player.minBet;
+    const cards = game.player.cards;
+    const rate = Pokereval.rate(...cards);
 
+    if (rate < .6 && minBet > 500) { return this.respond({ action: 'fold' }); }
+    if (minBet > 800) { return this.respond({ action: 'fold' }); }
+    if (rate > .9) { return this.respond({ action: 'bet', amount: 50 }); }
+    this.respond({ action: 'call' });
   }
 
   onFlop(game) { this.predict(game); }
