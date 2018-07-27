@@ -196,6 +196,44 @@ PokerBaseBot.statuses = {
   danger: 2
 };
 
+class ScoreBot extends Bot {
+  react(game) {
+    const stage = game.table.stage;
+    this[`on${stage}`](game);
+  }
+
+  action(game) {
+    const minBet = game.player.minBet;
+    const { table, player } = game;
+    const cards = player.cards.concat(table.cards).filter(v => v);
+    const analysis = new Evaluator().describe(cards);
+    const hand = new PokerHand(analysis.best.join(' '));
+    const score = hand.score;
+    if (score > 3000) { return this.respond({ action: 'fold' }); }
+    if (score < 1000) { return this.respond({ action: 'bet', amount: 30 }); }
+    if (score < 500) { return this.respond({ action: 'bet', amount: 60 }); }
+    if (score < 10) { return this.respond({ action: 'allin' }); }
+    return this.respond({ action: 'call' });
+  }
+
+  onDeal(game) {
+    const minBet = game.player.minBet;
+    const cards = game.player.cards;
+    const rate = Pokereval.rate(...cards);
+    if (rate < .5 && minBet > 500) { return this.respond({ action: 'fold' }); }
+    if (minBet > 800) { return this.respond({ action: 'fold' }); }
+    if (rate > .9) { return this.respond({ action: 'bet', amount: 30 }); }
+    if (rate === 1) { return this.respond({ action: 'bet', amount: 60 }); }
+    this.respond({ action: 'call' });
+  }
+
+  onFlop(game) { this.action(game); }
+  onTurn(game) { this.action(game); }
+  onRiver(game) { this.action(game); }
+}
+
+window.ScoreBot = ScoreBot;
+
 class ModelBot extends Bot {
   constructor() {
     super();
